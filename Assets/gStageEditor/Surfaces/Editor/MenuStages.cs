@@ -62,6 +62,9 @@ public class MenuStages
             var camNext = new GameObject();
             camNext.AddComponent<Camera>();
             camNext.name = "ReplayNext";
+            var debugPhys = new GameObject();
+            debugPhys.AddComponent<DebugPhysMaterials>();
+            debugPhys.name = "DebugPhys";
         }
 
         if (!File.Exists("Assets/Scenes/stage.unity"))
@@ -69,7 +72,7 @@ public class MenuStages
             var stage = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             EditorSceneManager.SaveScene(stage, "Assets/Scenes/stage.unity");
             var stageAsset = AssetImporter.GetAtPath("Assets/Scenes/stage.unity");
-            stageAsset.assetBundleName = "stage";
+            stageAsset.assetBundleName = "stage.grpack";
             stageAsset.SaveAndReimport();
         }
 
@@ -86,7 +89,7 @@ public class MenuStages
             go.AddComponent<ReplayCameras>();
 
             var layoutAsset = AssetImporter.GetAtPath("Assets/Scenes/layout0.unity");
-            layoutAsset.assetBundleName = "layout0";
+            layoutAsset.assetBundleName = "layout0.grpack";
             layoutAsset.SaveAndReimport();
             EditorSceneManager.MarkAllScenesDirty();
         }
@@ -128,7 +131,7 @@ public class MenuStages
             go.AddComponent<ReplayCameras>();
 
             var layoutAsset = AssetImporter.GetAtPath(newLayoutPath);
-            layoutAsset.assetBundleName = newLayoutName;
+            layoutAsset.assetBundleName = newLayoutName + ".grpack";
             layoutAsset.SaveAndReimport();
             EditorSceneManager.MarkSceneDirty(layout);
         }

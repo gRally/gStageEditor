@@ -34,7 +34,7 @@ public class ExportStages
             {
                 var fileName = Path.GetFileName(item).ToLower();
                 if (fileName.EndsWith(".manifest") ||
-                    fileName == "stage" ||
+                    fileName == "stage.grpack" ||
                     fileName.StartsWith("layout") ||
                     fileName == Path.GetFileName(path).ToLower())
                 {
