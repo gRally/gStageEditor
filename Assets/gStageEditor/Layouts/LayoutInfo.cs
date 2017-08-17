@@ -9,6 +9,7 @@ public class LayoutInfo : MonoBehaviour
     public string Description;
     [Space(10)]
     public string Nation;
+    public string Surfaces;
     public string Tags;
     public bool SaveTimes = true;
 }

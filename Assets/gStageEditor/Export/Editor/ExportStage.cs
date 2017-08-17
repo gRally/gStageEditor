@@ -195,6 +195,7 @@ public class ExportStages
                     xml.Settings[string.Format("Layouts/Layout{0}", i)].WriteString("description", info.Description);
                     xml.Settings[string.Format("Layouts/Layout{0}", i)].WriteBool("saveTimes", info.SaveTimes);
                     xml.Settings[string.Format("Layouts/Layout{0}", i)].WriteString("nation", info.Nation);
+                    xml.Settings[string.Format("Layouts/Layout{0}", i)].WriteString("surfaces", info.Surfaces);
                     xml.Settings[string.Format("Layouts/Layout{0}", i)].WriteString("tags", info.Tags);
                     //break;
                 }
