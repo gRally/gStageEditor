@@ -107,25 +107,26 @@ internal class grs_PhysRoadv1GUI : ShaderGUI
             EditorGUILayout.BeginVertical("Box");
             GUI.backgroundColor = guibackgroundColor;
 
-            // albedo
-            GUILayout.Label("Albedo [RGB] and specular/wet map [A].", HelpLabel);
-            GUILayout.Space(4);
-            materialEditor.TexturePropertySingleLine(Styles.albedo, albedoMap);
-            materialEditor.ShaderProperty(smoothScale, "Smoothness Mult");
-            materialEditor.TextureScaleOffsetProperty(albedoMap);
-            GUILayout.Space(4);
+			// albedo
+			GUILayout.Label("Albedo [RGB] and smoothness map [A].\nSmoothness map is also used to control the reflection in wet conditions.", HelpLabel);
+			GUILayout.Space(4);
+			materialEditor.TexturePropertySingleLine(Styles.albedo, albedoMap);
+			materialEditor.ShaderProperty(smoothScale, "Smoothness Mult");
+			materialEditor.TextureScaleOffsetProperty(albedoMap);
+			GUILayout.Space(4);
 
-            GUILayout.Label("The reflectivity map can be stored in the A channel\nof the normal map: otherwise use color.", HelpLabel);
-            materialEditor.ShaderProperty(useReflectMap, "Use Reflectivity Map");
-            if (useReflectMap.floatValue == 0.0f)
-            {
-                materialEditor.ShaderProperty(specColor, "Reflectivity color");
-            }
-            
-            //materialEditor.c .TexturePropertySingleLine(Styles.specular, specColor, smoothScale);
-            GUILayout.Space(4);
-            materialEditor.TexturePropertySingleLine(Styles.normal, fakeNormal);
-            materialEditor.TextureScaleOffsetProperty(fakeNormal);
+			// normal
+			GUILayout.Label("Normal [RGB] and specular map [A].If you want to use\nthe specular map,switch ON the the button below,\notherwise leave it OFF and you can use the specular color.", HelpLabel);
+			materialEditor.TexturePropertySingleLine(Styles.normal, fakeNormal);
+			materialEditor.ShaderProperty(useReflectMap, "Use Specular Map");
+			if (useReflectMap.floatValue == 0.0f)
+			{
+				materialEditor.ShaderProperty(specColor, "Specular color");
+			}
+
+			//materialEditor.c .TexturePropertySingleLine(Styles.specular, specColor, smoothScale);
+			GUILayout.Space(4);
+			materialEditor.TextureScaleOffsetProperty(fakeNormal);
 
             GUILayout.Space(4);
             TransparentModePopup();
