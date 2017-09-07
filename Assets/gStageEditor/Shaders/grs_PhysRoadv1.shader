@@ -31,6 +31,7 @@
 	SubShader
 	{
 		Tags { "RenderType"="Opaque" } 
+	 	Offset -3, -3
 		//"Queue"="AlphaTest" "IgnoreProjector"="True" }
 		//blend SrcAlpha OneMinusSrcAlpha
                
