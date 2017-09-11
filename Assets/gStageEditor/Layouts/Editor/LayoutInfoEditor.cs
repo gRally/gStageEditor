@@ -20,7 +20,9 @@ public class LayoutInfoEditor : Editor
         //GUILayout.EndHorizontal();
 
         GUILayout.Label("Description", EditorStyles.boldLabel);
-        _script.Description = EditorGUILayout.TextArea(_script.Description, GUILayout.MinHeight(50), GUILayout.MaxHeight(100));
+        EditorStyles.textField.wordWrap = true;
+        _script.Description = EditorGUILayout.TextArea(_script.Description, GUILayout.MinHeight(100), GUILayout.MaxHeight(200), 
+            GUILayout.MaxWidth(450));
 
         //GUILayout.BeginHorizontal();
         GUILayout.Label("Nation:", EditorStyles.boldLabel);
