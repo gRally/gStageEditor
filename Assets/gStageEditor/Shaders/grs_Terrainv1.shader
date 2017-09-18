@@ -42,9 +42,8 @@
 		CGPROGRAM
 		#pragma surface surf StandardSpecular fullforwardshadows addshadow
 		// until texCubeLOD is solved
-		#pragma only_renderers d3d11
+		#pragma exclude_renderers gles
 		#pragma target 5.0
-		#pragma debug
 
 		#pragma shader_feature USE_WET
         #pragma shader_feature USE_REFLECTIVITY_MAP
