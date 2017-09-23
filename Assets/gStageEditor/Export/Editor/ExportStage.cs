@@ -138,32 +138,35 @@ public class ExportStages
         }
     }
 
-        static void writeSurfaceSettings(ref gUtility.CXml xml, ref StageData stage)
+    static void writeSurfaceSettings(ref gUtility.CXml xml, ref StageData stage)
     {
         for (int i = 0; i < stage.surfaceList.Count; i++)
         {
             var s = stage.surfaceList[i];
-            string SURF = string.Format("SurfaceLibrary/Surface#{0}", i + 1);
+            var SURF = string.Format("SurfaceLibrary/Surface#{0}", i + 1);
             xml.Settings[SURF].WriteString("type", s.Type.ToString());
-            xml.Settings[SURF].WriteString("color", c3(s.PhysColor));
             xml.Settings[SURF].WriteString("name", s.Name);
-            xml.Settings[SURF].WriteVector2("friction", v2(s.Friction));
-            xml.Settings[SURF].WriteFloat("rolling", s.Rolling);
-            xml.Settings[SURF].WriteFloat("drag", s.Drag);
-            xml.Settings[SURF].WriteVector2("bump", v2(s.Bump));
+            xml.Settings[SURF].WriteString("color", c3(s.PhysColor));
 
-            xml.Settings[SURF].WriteString("trailColor", c4(s.TrailColor));
-            xml.Settings[SURF].WriteFloat("trailBump", s.TrailBump);
+            var PHYS = string.Format("SurfaceLibrary/Surface#{0}/Phys", i + 1);
+            xml.Settings[PHYS].WriteFloat("usableGrip", s.UsableGrip);
+            xml.Settings[PHYS].WriteFloat("rolling", s.Rolling);
+            xml.Settings[PHYS].WriteFloat("drag", s.Drag);
+            xml.Settings[PHYS].WriteVector2("bump", v2(s.Bump));
 
-            xml.Settings[SURF].WriteString("smokeStart", c4(s.SmokeStart));
-            xml.Settings[SURF].WriteString("smokeStartVariation", c4(s.SmokeStartVariation));
-            xml.Settings[SURF].WriteString("smokeEnd", c4(s.SmokeEnd));
-            xml.Settings[SURF].WriteString("smokeEndVariation", c4(s.SmokeEndVariation));
+            var TRAILS = string.Format("SurfaceLibrary/Surface#{0}/Trails", i + 1);
+            xml.Settings[TRAILS].WriteString("trailColor", c4(s.TrailColor));
+            xml.Settings[TRAILS].WriteFloat("trailBump", s.TrailBump);
 
-            xml.Settings[SURF].WriteVector2("lifeTime", v2(s.LifeTime));
-            xml.Settings[SURF].WriteVector2("speed", v2(s.Speed));
-            xml.Settings[SURF].WriteVector2("sizeStart", v2(s.SizeStart));
-            xml.Settings[SURF].WriteVector2("sizeEnd", v2(s.SizeEnd));
+            var SMOKE = string.Format("SurfaceLibrary/Surface#{0}/Smoke", i + 1);
+            xml.Settings[SMOKE].WriteString("smokeStart", c4(s.SmokeStart));
+            xml.Settings[SMOKE].WriteString("smokeStartVariation", c4(s.SmokeStartVariation));
+            xml.Settings[SMOKE].WriteString("smokeEnd", c4(s.SmokeEnd));
+            xml.Settings[SMOKE].WriteString("smokeEndVariation", c4(s.SmokeEndVariation));
+            xml.Settings[SMOKE].WriteVector2("lifeTime", v2(s.LifeTime));
+            xml.Settings[SMOKE].WriteVector2("speed", v2(s.Speed));
+            xml.Settings[SMOKE].WriteVector2("sizeStart", v2(s.SizeStart));
+            xml.Settings[SMOKE].WriteVector2("sizeEnd", v2(s.SizeEnd));
         }
     }
 

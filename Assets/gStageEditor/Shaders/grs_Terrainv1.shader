@@ -39,6 +39,7 @@
 	SubShader
 	{
 		Tags{ "RenderType" = "Opaque" }
+		Offset -3, -3
 		CGPROGRAM
 		#pragma surface surf StandardSpecular fullforwardshadows addshadow
 		// until texCubeLOD is solved

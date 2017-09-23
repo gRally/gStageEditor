@@ -13,18 +13,16 @@ public class Surface
         TARMAC,
         GRASS,
         GRAVEL,
-        CONCRETE,
-        SAND,
-        COBBLES,
         DIRT,
         SNOW,
         ICE
     }
 
     public SURFACE_TYPE Type;
-    public Color PhysColor;
     public string Name;
-    public Vector2 Friction;
+    public Color PhysColor;
+    [Header("Physics"), Range(0.0f, 1.0f)]
+    public float UsableGrip;
     public float Rolling;
     public float Drag;
     public Vector2 Bump;

@@ -150,7 +150,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.TARMAC;
         newItem.PhysColor = new Color32(0, 0, 0, 255);
         newItem.Name = "Tarmac max grip";
-        newItem.Friction = new Vector2(1.0f, 0.9f);
+        newItem.UsableGrip = 1.0f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.0f;
         newItem.Bump = new Vector2(0.0f, 2.0f);
@@ -170,7 +170,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.TARMAC;
         newItem.PhysColor = new Color32(48, 48, 48, 255);
         newItem.Name = "Tarmac med grip";
-        newItem.Friction = new Vector2(0.9f, 0.8f);
+        newItem.UsableGrip = 0.5f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.0f;
         newItem.Bump = new Vector2(0.0f, 2.0f);
@@ -190,7 +190,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.TARMAC;
         newItem.PhysColor = new Color32(96, 96, 96, 255);
         newItem.Name = "Tarmac min grip";
-        newItem.Friction = new Vector2(0.8f, 0.7f);
+        newItem.UsableGrip = 0.0f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.0f;
         newItem.Bump = new Vector2(0.0f, 2.0f);
@@ -211,7 +211,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.GRAVEL;
         newItem.PhysColor = new Color32(212, 160, 23, 255);
         newItem.Name = "Gravel max grip";
-        newItem.Friction = new Vector2(0.7f, 0.9f);
+        newItem.UsableGrip = 1.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
         newItem.Bump = new Vector2(0.0f, 10.0f);
@@ -231,7 +231,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.GRAVEL;
         newItem.PhysColor = new Color32(255, 208, 071, 255);
         newItem.Name = "Gravel med grip";
-        newItem.Friction = new Vector2(0.6f, 0.8f);
+        newItem.UsableGrip = 0.5f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
         newItem.Bump = new Vector2(0.0f, 10.0f);
@@ -251,7 +251,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.GRAVEL;
         newItem.PhysColor = new Color32(255, 255, 119, 255);
         newItem.Name = "Gravel min grip";
-        newItem.Friction = new Vector2(0.5f, 0.7f);
+        newItem.UsableGrip = 0.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
         newItem.Bump = new Vector2(0.0f, 10.0f);
@@ -272,7 +272,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.DIRT;
         newItem.PhysColor = new Color32(111, 078, 055, 255);
         newItem.Name = "Dirt max grip";
-        newItem.Friction = new Vector2(0.6f, 0.8f);
+        newItem.UsableGrip = 1.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.5f;
         newItem.Bump = new Vector2(0.0f, 12.0f);
@@ -292,7 +292,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.DIRT;
         newItem.PhysColor = new Color32(159, 126, 103, 255);
         newItem.Name = "Dirt med grip";
-        newItem.Friction = new Vector2(0.5f, 0.7f);
+        newItem.UsableGrip = 0.5f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.5f;
         newItem.Bump = new Vector2(0.0f, 12.0f);
@@ -312,7 +312,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.DIRT;
         newItem.PhysColor = new Color32(207, 174, 151, 255);
         newItem.Name = "Dirt min grip";
-        newItem.Friction = new Vector2(0.4f, 0.6f);
+        newItem.UsableGrip = 0.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.5f;
         newItem.Bump = new Vector2(0.0f, 12.0f);
@@ -333,7 +333,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.GRASS;
         newItem.PhysColor = new Color32(000, 159, 000, 255);
         newItem.Name = "Grass max grip";
-        newItem.Friction = new Vector2(0.6f, 0.9f);
+        newItem.UsableGrip = 1.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 20.0f;
         newItem.Bump = new Vector2(0.0f, 10.0f);
@@ -353,7 +353,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.GRASS;
         newItem.PhysColor = new Color32(000, 207, 000, 255);
         newItem.Name = "Grass med grip";
-        newItem.Friction = new Vector2(0.5f, 0.8f);
+        newItem.UsableGrip = 0.5f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 20.0f;
         newItem.Bump = new Vector2(0.0f, 10.0f);
@@ -373,7 +373,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.GRASS;
         newItem.PhysColor = new Color32(000, 255, 000, 255);
         newItem.Name = "Grass min grip";
-        newItem.Friction = new Vector2(0.4f, 0.7f);
+        newItem.UsableGrip = 0.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 20.0f;
         newItem.Bump = new Vector2(0.0f, 10.0f);
@@ -389,33 +389,12 @@ public class MenuStages
         newItem.SizeEnd = new Vector2(25.0f, 10.0f);
         stage.surfaceList.Add(newItem);
 
-        // wall
-        newItem = new Surface();
-        newItem.Type = Surface.SURFACE_TYPE.CONCRETE;
-        newItem.PhysColor = new Color32(255, 000, 000, 255);
-        newItem.Name = "Wall";
-        newItem.Friction = new Vector2(1.0f, 0.9f);
-        newItem.Rolling = 1.0f;
-        newItem.Drag = 0.0f;
-        newItem.Bump = new Vector2(0.0f, 2.0f);
-        newItem.TrailColor = new Color32(248, 252, 0, 255);
-        newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(230, 230, 230, 255);
-        newItem.SmokeStartVariation = new Color32(26, 26, 38, 255);
-        newItem.SmokeEnd = new Color32(204, 204, 204, 255);
-        newItem.SmokeEndVariation = new Color32(51, 51, 51, 255);
-        newItem.LifeTime = new Vector2(4.0f, 1.0f);
-        newItem.Speed = new Vector2(0.4f, 0.1f);
-        newItem.SizeStart = new Vector2(0.5f, 0.6f);
-        newItem.SizeEnd = new Vector2(1.5f, 0.75f);
-        stage.surfaceList.Add(newItem);
-
         // snow
         newItem = new Surface();
         newItem.Type = Surface.SURFACE_TYPE.SNOW;
         newItem.PhysColor = new Color32(023, 095, 103, 255);
         newItem.Name = "Snow max grip";
-        newItem.Friction = new Vector2(0.4f, 0.4f);
+        newItem.UsableGrip = 1.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
         newItem.Bump = new Vector2(0.0f, 10.0f);
@@ -435,7 +414,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.SNOW;
         newItem.PhysColor = new Color32(071, 143, 151, 255);
         newItem.Name = "Snow med grip";
-        newItem.Friction = new Vector2(0.3f, 0.3f);
+        newItem.UsableGrip = 0.5f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
         newItem.Bump = new Vector2(0.0f, 10.0f);
@@ -455,7 +434,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.SNOW;
         newItem.PhysColor = new Color32(119, 191, 199, 255);
         newItem.Name = "Snow min grip";
-        newItem.Friction = new Vector2(0.2f, 0.2f);
+        newItem.UsableGrip = 0.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
         newItem.Bump = new Vector2(0.0f, 10.0f);
@@ -476,7 +455,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.ICE;
         newItem.PhysColor = new Color32(023, 095, 103, 255);
         newItem.Name = "Ice max grip";
-        newItem.Friction = new Vector2(0.4f, 0.4f);
+        newItem.UsableGrip = 1.0f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.2f;
         newItem.Bump = new Vector2(0.0f, 4.0f);
@@ -496,7 +475,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.ICE;
         newItem.PhysColor = new Color32(071, 143, 151, 255);
         newItem.Name = "Ice med grip";
-        newItem.Friction = new Vector2(0.3f, 0.3f);
+        newItem.UsableGrip = 0.5f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.2f;
         newItem.Bump = new Vector2(0.0f, 4.0f);
@@ -516,7 +495,7 @@ public class MenuStages
         newItem.Type = Surface.SURFACE_TYPE.ICE;
         newItem.PhysColor = new Color32(119, 191, 199, 255);
         newItem.Name = "Ice min grip";
-        newItem.Friction = new Vector2(0.2f, 0.2f);
+        newItem.UsableGrip = 0.0f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.2f;
         newItem.Bump = new Vector2(0.0f, 4.0f);
