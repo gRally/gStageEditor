@@ -1,2 +1,2 @@
-# gStageEditor
-gRally stage editor Unity3d Asset
+# gStageEditor_Demo
+Demo of gStageEditor project
