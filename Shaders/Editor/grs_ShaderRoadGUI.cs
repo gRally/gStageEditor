@@ -64,6 +64,9 @@ internal class grs_PhysRoadv1GUI : ShaderGUI
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
     {
+        // antoripa rules
+        var currentColor = GUI.backgroundColor;
+
         // NU Color guicontentColor = GUI.contentColor;
         Color guibackgroundColor = GUI.backgroundColor;
         Color BoxColor = GUI.backgroundColor;
@@ -198,6 +201,9 @@ internal class grs_PhysRoadv1GUI : ShaderGUI
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
         }
+        
+        // antoripa rules
+        GUI.backgroundColor = currentColor;
     }
 
     void TransparentModePopup()

@@ -38,8 +38,10 @@
 	// SM3+
 	SubShader
 	{
-		Tags{ "RenderType" = "Opaque" }
-		Offset -3, -3
+		Tags{ "RenderType" = "Opaque" "Queue" = "Geometry+0"}
+		//Offset -2, -2
+		Cull Back
+
 		CGPROGRAM
 		#pragma surface surf StandardSpecular fullforwardshadows addshadow
 		// until texCubeLOD is solved

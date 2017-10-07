@@ -30,11 +30,11 @@
 	// SM3+
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" } 
-	 	Offset -3, -3
+		Tags { "RenderType"="Opaque" "Queue" = "Geometry+0"} 
+	 	//Offset -3, -3
 		//"Queue"="AlphaTest" "IgnoreProjector"="True" }
 		//blend SrcAlpha OneMinusSrcAlpha
-               
+		Cull Back
 		//ZWrite Off
 
 		CGPROGRAM
