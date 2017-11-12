@@ -43,34 +43,35 @@ public class StartFinish : MonoBehaviour
 	LayoutPath layout = null;
     [Header("Signals")]
     public float SignalDistanceFromCenter = 2.5f;
+    public float SignalDistanceFromBanner = 0.8f;
     
     //[ShowOnly, Tooltip("Points 3d"), Header("Spline Points")]
     [HideInInspector]
 	public List<Vector3> Points = new List<Vector3>();
 
-	public bool UpdatePoints()
-	{
-		if (somethingIsChanged())
-		{
-			try 
-			{
-				if (layout == null)
-				{
-					layout = transform.GetComponent<LayoutPath>();					
-				}
-				
-				Points.Clear();
+    public bool UpdatePoints()
+    {
+        if (SomethingIsChanged())
+        {
+            try
+            {
+                if (layout == null)
+                {
+                    layout = transform.GetComponent<LayoutPath>();
+                }
+
+                Points.Clear();
                 layout.GetPositionOnPath(StartDistance + StartCarRelative);
                 Points.Add(layout.PosOnPath);
 
                 layout.GetPositionOnPath(StartDistance + StartCo1Relative + StartCo0Relative);
-				Points.Add(layout.PosOnPath);
-				layout.GetPositionOnPath(StartDistance + StartCo1Relative);
-				Points.Add(layout.PosOnPath);
-				layout.GetPositionOnPath(StartDistance);
-				Points.Add(layout.PosOnPath);
-				layout.GetPositionOnPath(StartDistance + StartEndRelative);
-				Points.Add(layout.PosOnPath);
+                Points.Add(layout.PosOnPath);
+                layout.GetPositionOnPath(StartDistance + StartCo1Relative);
+                Points.Add(layout.PosOnPath);
+                layout.GetPositionOnPath(StartDistance);
+                Points.Add(layout.PosOnPath);
+                layout.GetPositionOnPath(StartDistance + StartEndRelative);
+                Points.Add(layout.PosOnPath);
 
                 layout.GetPositionOnPath(Split1Distance);
                 Points.Add(layout.PosOnPath);
@@ -78,24 +79,24 @@ public class StartFinish : MonoBehaviour
                 Points.Add(layout.PosOnPath);
                 layout.GetPositionOnPath(Split3Distance);
                 Points.Add(layout.PosOnPath);
-                
+
                 layout.GetPositionOnPath(FinishDistance + FinishCo0Relative);
-				Points.Add(layout.PosOnPath);
-				layout.GetPositionOnPath(FinishDistance);
-				Points.Add(layout.PosOnPath);
-				layout.GetPositionOnPath(FinishDistance + FinishStopRelative);
-				Points.Add(layout.PosOnPath);
-				layout.GetPositionOnPath(FinishDistance + FinishStopRelative + FinishEndRelative);
-				Points.Add(layout.PosOnPath);				
-			} 
-			catch (System.Exception ex)
-			{
-				Debug.LogError(ex.ToString());
-				return false;
-			}
-		}
-		return true;
-	}
+                Points.Add(layout.PosOnPath);
+                layout.GetPositionOnPath(FinishDistance);
+                Points.Add(layout.PosOnPath);
+                layout.GetPositionOnPath(FinishDistance + FinishStopRelative);
+                Points.Add(layout.PosOnPath);
+                layout.GetPositionOnPath(FinishDistance + FinishStopRelative + FinishEndRelative);
+                Points.Add(layout.PosOnPath);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError(ex.ToString());
+                return false;
+            }
+        }
+        return true;
+    }
 
     public void CalculateSplits()
     {
@@ -106,64 +107,66 @@ public class StartFinish : MonoBehaviour
         Split3Distance = StartDistance + (distSplits * 3.0f);
     }
 
-	public void PlaceSignals()
-	{
-		if (layout == null)
-		{
-			return;
-		}
+    public void PlaceSignals()
+    {
+        if (layout == null)
+        {
+            return;
+        }
 
-        addCollider();
+        AddCollider();
 
-		// Start -----------
-		// Co0
-		layout.GetPositionOnPath(StartDistance + StartCo1Relative + StartCo0Relative);
-		Vector3 pos = layout.PosOnPath;
+        // Start -----------
+        // Co0
+        layout.GetPositionOnPath(StartDistance + StartCo1Relative + StartCo0Relative);
+        Vector3 pos = layout.PosOnPath;
+        Vector3 p0 = layout.GetPointPrec();
+        Vector3 p1 = layout.GetPointNext();
 
-		Vector3 p0 = layout.GetPointPrec();
-		Vector3 p1 = layout.GetPointNext();
+        Vector3 dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        createSign("SIGN_START_00", pos + (dot * SignalDistanceFromCenter), p0, p1);
+        createSign("SIGN_START_00", pos - (dot * SignalDistanceFromCenter), p0, p1);
 
-		Vector3 dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-		createSign ("SIGN_START_00", pos + (dot * SignalDistanceFromCenter), p0, p1);
-		createSign ("SIGN_START_00", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        // Co1
+        layout.GetPositionOnPath(StartDistance + StartCo1Relative);
+        pos = layout.PosOnPath;
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
 
-		// Co1
-		layout.GetPositionOnPath(StartDistance + StartCo1Relative);
-		pos = layout.PosOnPath;
-		
-		p0 = layout.GetPointPrec();
-		p1 = layout.GetPointNext();
-		
-		dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-		createSign ("SIGN_START_01", pos + (dot * SignalDistanceFromCenter), p0, p1);
-		createSign ("SIGN_START_01", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        createSign("SIGN_START_01", pos + (dot * SignalDistanceFromCenter), p0, p1);
+        createSign("SIGN_START_01", pos - (dot * SignalDistanceFromCenter), p0, p1);
 
-		// start
-		layout.GetPositionOnPath(StartDistance);
-		pos = layout.PosOnPath;
-		
-		p0 = layout.GetPointPrec();
-		p1 = layout.GetPointNext();
-		
-		dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-		createSign ("SIGN_START_02", pos + (dot * SignalDistanceFromCenter), p0, p1);
-		createSign ("SIGN_START_02", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        // start
+        layout.GetPositionOnPath(StartDistance - SignalDistanceFromBanner);
+        pos = layout.PosOnPath;
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
 
-		// end
-		layout.GetPositionOnPath(StartDistance + StartEndRelative);
-		pos = layout.PosOnPath;
-		
-		p0 = layout.GetPointPrec();
-		p1 = layout.GetPointNext();
-		
-		dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-		createSign ("SIGN_FREE", pos + (dot * SignalDistanceFromCenter), p0, p1);
-		createSign ("SIGN_FREE", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        createSign("SIGN_START_02", pos + (dot * SignalDistanceFromCenter), p0, p1);
+        createSign("SIGN_START_02", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        
+        // banner start
+        layout.GetPositionOnPath(StartDistance);
+        pos = layout.PosOnPath;
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
+        createSign("BANNER_START", pos, p0, p1, 0.0f);
+        
+        // end
+        layout.GetPositionOnPath(StartDistance + StartEndRelative);
+        pos = layout.PosOnPath;
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
+
+        dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        createSign("SIGN_FREE", pos + (dot * SignalDistanceFromCenter), p0, p1);
+        createSign("SIGN_FREE", pos - (dot * SignalDistanceFromCenter), p0, p1);
 
         // split 1
         layout.GetPositionOnPath(Split1Distance);
         pos = layout.PosOnPath;
-
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
 
@@ -174,7 +177,6 @@ public class StartFinish : MonoBehaviour
         // split 2
         layout.GetPositionOnPath(Split2Distance);
         pos = layout.PosOnPath;
-
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
 
@@ -185,7 +187,6 @@ public class StartFinish : MonoBehaviour
         // split 3
         layout.GetPositionOnPath(Split3Distance);
         pos = layout.PosOnPath;
-
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
 
@@ -196,50 +197,55 @@ public class StartFinish : MonoBehaviour
         // finish
         // Co0
         layout.GetPositionOnPath(FinishDistance + FinishCo0Relative);
-		pos = layout.PosOnPath;
-		
-		p0 = layout.GetPointPrec();
-		p1 = layout.GetPointNext();
-		
-		dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-		createSign ("SIGN_END_00", pos + (dot * SignalDistanceFromCenter), p0, p1);
-		createSign ("SIGN_END_00", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        pos = layout.PosOnPath;
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
 
-		// finish
-		layout.GetPositionOnPath(FinishDistance);
-		pos = layout.PosOnPath;
-		
-		p0 = layout.GetPointPrec();
-		p1 = layout.GetPointNext();
-		
-		dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-		createSign ("SIGN_END_01", pos + (dot * SignalDistanceFromCenter), p0, p1);
-		createSign ("SIGN_END_01", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        createSign("SIGN_END_00", pos + (dot * SignalDistanceFromCenter), p0, p1);
+        createSign("SIGN_END_00", pos - (dot * SignalDistanceFromCenter), p0, p1);
 
-		// stop
-		layout.GetPositionOnPath(FinishDistance + FinishStopRelative);
-		pos = layout.PosOnPath;
-		
-		p0 = layout.GetPointPrec();
-		p1 = layout.GetPointNext();
-		
-		dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-		createSign ("SIGN_END_02", pos + (dot * SignalDistanceFromCenter), p0, p1);
-		createSign ("SIGN_END_02", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        // finish
+        layout.GetPositionOnPath(FinishDistance - SignalDistanceFromBanner);
+        pos = layout.PosOnPath;
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
 
-		// end
-		layout.GetPositionOnPath(FinishDistance + FinishStopRelative + FinishEndRelative);
-		pos = layout.PosOnPath;
-		
-		p0 = layout.GetPointPrec();
-		p1 = layout.GetPointNext();
-		
-		dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-		createSign ("SIGN_FREE", pos + (dot * SignalDistanceFromCenter), p0, p1);
-		createSign ("SIGN_FREE", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        createSign("SIGN_END_01", pos + (dot * SignalDistanceFromCenter), p0, p1);
+        createSign("SIGN_END_01", pos - (dot * SignalDistanceFromCenter), p0, p1);
+        
+        // banner finish
+        layout.GetPositionOnPath(FinishDistance);
+        pos = layout.PosOnPath;
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
+        createSign("BANNER_FINISH", pos, p0, p1, 0.0f);
+        
+        // stop
+        layout.GetPositionOnPath(FinishDistance + FinishStopRelative);
+        pos = layout.PosOnPath;
 
-        removeCollider();
-	}
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
+
+        dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        createSign("SIGN_END_02", pos + (dot * SignalDistanceFromCenter), p0, p1);
+        createSign("SIGN_END_02", pos - (dot * SignalDistanceFromCenter), p0, p1);
+
+        // end
+        layout.GetPositionOnPath(FinishDistance + FinishStopRelative + FinishEndRelative);
+        pos = layout.PosOnPath;
+
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
+
+        dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        createSign("SIGN_FREE", pos + (dot * SignalDistanceFromCenter), p0, p1);
+        createSign("SIGN_FREE", pos - (dot * SignalDistanceFromCenter), p0, p1);
+
+        //RemoveCollider();
+    }
 
     /// <summary>
     /// clean the signs
@@ -252,7 +258,9 @@ public class StartFinish : MonoBehaviour
             if (element.name.ToLower().StartsWith("sign_start") ||
                 element.name.ToLower().StartsWith("sign_split") ||
                 element.name.ToLower().StartsWith("sign_end") ||
-                element.name.ToLower().StartsWith("sign_free"))
+                element.name.ToLower().StartsWith("sign_free") ||
+                element.name.ToLower().StartsWith("banner_start") ||
+                element.name.ToLower().StartsWith("banner_finish"))
             {
                 DestroyImmediate(element.gameObject);
             }
@@ -263,7 +271,9 @@ public class StartFinish : MonoBehaviour
             if (element.name.ToLower().StartsWith("sign_start") ||
                 element.name.ToLower().StartsWith("sign_split") ||
                 element.name.ToLower().StartsWith("sign_end") ||
-                element.name.ToLower().StartsWith("sign_free"))
+                element.name.ToLower().StartsWith("sign_free") ||
+                element.name.ToLower().StartsWith("banner_start") ||
+                element.name.ToLower().StartsWith("banner_finish"))
             {
                 CleanSigns();
                 break;
@@ -284,45 +294,43 @@ public class StartFinish : MonoBehaviour
         prefab_instance.transform.SetParent(transform);
         prefab_instance.name = signName;
 
-        applyDistance(prefab_instance);
+        ApplyDistance(prefab_instance);
 #endif
     }
 
-	bool somethingIsChanged()
-	{
-		bool isChanged = StartCarRelative != oldStartCarRelative ||
-            StartDistance != oldStartDistance ||
-			StartCo0Relative != oldStartCo0Relative ||
-			StartCo1Relative != oldStartCo1Relative ||
-			StartEndRelative != oldStartEndRelative ||
+    bool SomethingIsChanged()
+    {
+        bool isChanged = StartCarRelative != oldStartCarRelative ||
+                         StartDistance != oldStartDistance ||
+                         StartCo0Relative != oldStartCo0Relative ||
+                         StartCo1Relative != oldStartCo1Relative ||
+                         StartEndRelative != oldStartEndRelative ||
+                         Split1Distance != oldSplit1Distance ||
+                         Split2Distance != oldSplit2Distance ||
+                         Split3Distance != oldSplit3Distance ||
+                         FinishDistance != oldFinishDistance ||
+                         FinishCo0Relative != oldFinishCo0Relative ||
+                         FinishStopRelative != oldFinishStopRelative ||
+                         FinishEndRelative != oldFinishEndRelative;
 
-            Split1Distance != oldSplit1Distance ||
-            Split2Distance != oldSplit2Distance ||
-            Split3Distance != oldSplit3Distance ||
-
-            FinishDistance != oldFinishDistance ||
-			FinishCo0Relative != oldFinishCo0Relative ||
-			FinishStopRelative != oldFinishStopRelative ||
-			FinishEndRelative != oldFinishEndRelative;
-
-		oldStartDistance = StartDistance;
-		oldStartCo0Relative = StartCo0Relative;
-		oldStartCo1Relative = StartCo1Relative;
-		oldStartEndRelative = StartEndRelative;
+        oldStartDistance = StartDistance;
+        oldStartCo0Relative = StartCo0Relative;
+        oldStartCo1Relative = StartCo1Relative;
+        oldStartEndRelative = StartEndRelative;
 
         oldSplit1Distance = Split1Distance;
         oldSplit2Distance = Split2Distance;
         oldSplit3Distance = Split3Distance;
 
         oldFinishDistance = FinishDistance;
-		oldFinishCo0Relative = FinishCo0Relative;
-		oldFinishStopRelative = FinishStopRelative;
-		oldFinishEndRelative = FinishEndRelative;
+        oldFinishCo0Relative = FinishCo0Relative;
+        oldFinishStopRelative = FinishStopRelative;
+        oldFinishEndRelative = FinishEndRelative;
 
-		return isChanged;
-	}
+        return isChanged;
+    }
 
-    void applyDistance(GameObject obj, float offset = 0.08f) // 0.06 on plane is ok
+    void ApplyDistance(GameObject obj, float offset = 0.08f) // 0.06 on plane is ok
     {
         var mesh = obj.GetComponent<MeshFilter>().sharedMesh;
         var matrix = obj.transform.localToWorldMatrix;
@@ -337,25 +345,27 @@ public class StartFinish : MonoBehaviour
         }
     }
 
-    void addCollider()
+    void AddCollider()
     {
-        int layerIndex = LayerMask.NameToLayer("COLLISION");
+        var layerIndex = LayerMask.NameToLayer("COLLISION");
         var collisions = Resources.FindObjectsOfTypeAll(typeof(GameObject));
-        foreach (GameObject col in collisions)
+        foreach (var o in collisions)
         {
-            if (col.layer == layerIndex)
+            var col = (GameObject) o;
+            if (col.layer == layerIndex && col.GetComponent<MeshCollider>() == null)
             {
                 col.AddComponent<MeshCollider>();
             }
         }
     }
 
-    void removeCollider()
+    void RemoveCollider()
     {
-        int layerIndex = LayerMask.NameToLayer("COLLISION");
+        var layerIndex = LayerMask.NameToLayer("COLLISION");
         var collisions = Resources.FindObjectsOfTypeAll(typeof(GameObject));
-        foreach (GameObject col in collisions)
+        foreach (var o in collisions)
         {
+            var col = (GameObject) o;
             if (col.layer == layerIndex)
             {
                 DestroyImmediate(col.GetComponent<MeshCollider>());

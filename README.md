@@ -1,3 +1,6 @@
+### v1.2.0 - 2017/11/12
+ - Added start/finish banner
+
 ### v1.1.0 - 2017/09/23
  - New physics export
 
