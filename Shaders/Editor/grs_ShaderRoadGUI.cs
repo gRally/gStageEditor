@@ -66,9 +66,14 @@ internal class grs_PhysRoadv1GUI : ShaderGUI
     {
         // antoripa rules
         var currentColor = GUI.backgroundColor;
+		// antoripa 04.12.2017 fix 
+		GUIStyle m_box = GUI.skin.box;
+		var skinBackground = m_box.normal.background;
 
-        // NU Color guicontentColor = GUI.contentColor;
-        Color guibackgroundColor = GUI.backgroundColor;
+		
+
+		// NU Color guicontentColor = GUI.contentColor;
+		Color guibackgroundColor = GUI.backgroundColor;
         Color BoxColor = GUI.backgroundColor;
         Color HelpCol = new Color(0.890f * 0.7f, 0.318f * 0.7f, 0.125f * 0.7f, 1.0f);
         Color WeatherBG = HelpCol;
@@ -80,8 +85,7 @@ internal class grs_PhysRoadv1GUI : ShaderGUI
             WeatherBG = Color.Lerp(guibackgroundColor, WeatherBG, 0.7f);
         }
 
-        GUIStyle m_box = GUI.skin.box;
-        m_box.normal.background = Texture2D.whiteTexture;
+		m_box.normal.background = Texture2D.whiteTexture;
         GUI.skin.box = m_box;
         BoxColor = new Color(0.83f, 0.83f, 0.83f, 1.0f);
         WeatherBGbright = Color.Lerp(BoxColor, WeatherBG, 0.45f);
@@ -204,7 +208,10 @@ internal class grs_PhysRoadv1GUI : ShaderGUI
         
         // antoripa rules
         GUI.backgroundColor = currentColor;
-    }
+		// antoripa 04.12.2017 fix 
+		m_box.normal.background = skinBackground;
+		GUI.skin.box = m_box;
+	}
 
     void TransparentModePopup()
     {

@@ -36,7 +36,7 @@ public class LayoutPathEditor : Editor
 
 		if (layoutPath.CreateManualPath) //&& /*Input.GetMouseButton(1) &&*/ Input.GetKey(KeyCode.LeftControl))
 		{
-			if (Event.current.keyCode == KeyCode.LeftControl && Event.current.type == EventType.keyUp)
+			if (Event.current.keyCode == KeyCode.LeftControl && Event.current.type == EventType.KeyUp)
 			{
 				Vector2 guiPosition = Event.current.mousePosition;
 				Ray ray = HandleUtility.GUIPointToWorldRay(guiPosition);

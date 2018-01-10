@@ -5,7 +5,10 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Globalization;
 using UnityEditor.SceneManagement;
+using UnityEngine.Rendering;
+using Object = UnityEngine.Object;
 
 public class ExportStages
 {
@@ -24,9 +27,9 @@ public class ExportStages
             stage.exportPath = path;
 
             // 1: save scenes
-            for (int i = 0; i < EditorSceneManager.sceneCount; i++)
+            for (int i = 0; i < SceneManager.sceneCount; i++)
             {
-                EditorSceneManager.SaveScene(EditorSceneManager.GetSceneAt(i));
+                EditorSceneManager.SaveScene(SceneManager.GetSceneAt(i));
             }
 
             // 2: clear old files
@@ -46,7 +49,7 @@ public class ExportStages
             AssetDatabase.SaveAssets();
 
             // 3: apply vertex data
-            foreach (var item in GameObject.FindObjectsOfType<JBooth.VertexPainterPro.VertexInstanceStream>())
+            foreach (var item in Object.FindObjectsOfType<JBooth.VertexPainterPro.VertexInstanceStream>())
             {
                 item.Apply();
             }
@@ -61,7 +64,6 @@ public class ExportStages
             writeMaterialSettings(ref stageXml, ref stage);
 
             stageXml.Commit();
-
             // 5: rollback the textures edited:
             // not at the moment... rollbackEditTextures();
 
@@ -72,69 +74,6 @@ public class ExportStages
         else
         {
             EditorUtility.DisplayDialog("Create Stage", "no path selected!!", "Ok.. I'll try again");
-        }
-    }
-
-    public static void ExportStageBatch()
-    {
-        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.StandaloneWindows);
-
-        StageData stage = (StageData)AssetDatabase.LoadAssetAtPath(assetPath, typeof(StageData));
-
-        if (Directory.Exists(stage.exportPath))
-        {
-            // OK!
-            string path = stage.exportPath;
-
-            // 1: save scenes
-            for (int i = 0; i < EditorSceneManager.sceneCount; i++)
-            {
-                EditorSceneManager.SaveScene(EditorSceneManager.GetSceneAt(i));
-            }
-
-            // 2: clear old files
-            foreach (var item in Directory.GetFiles(path))
-            {
-                var fileName = Path.GetFileName(item).ToLower();
-                if (fileName.EndsWith(".manifest") ||
-                    fileName == "stage" ||
-                    fileName.StartsWith("layout") ||
-                    fileName == Path.GetFileName(path).ToLower())
-                {
-                    File.Delete(item);
-                }
-            }
-
-            EditorUtility.SetDirty(stage);
-            AssetDatabase.SaveAssets();
-
-            // 3: apply vertex data
-            foreach (var item in GameObject.FindObjectsOfType<JBooth.VertexPainterPro.VertexInstanceStream>())
-            {
-                item.Apply();
-            }
-
-            // 4: store xml data
-            // write data stages
-            gUtility.CXml stageXml = new gUtility.CXml(path + @"/stage.xml", true);
-
-            writeSurfaceSettings(ref stageXml, ref stage);
-            writeStageSettings(ref stageXml, ref stage);
-            writeLayoutSettings(ref stageXml);
-            writeMaterialSettings(ref stageXml, ref stage);
-
-            stageXml.Commit();
-
-            // 5: rollback the textures edited:
-            // not at the moment... rollbackEditTextures();
-
-            // 6: build stage!
-            BuildPipeline.BuildAssetBundles(path, BuildAssetBundleOptions.ForceRebuildAssetBundle, BuildTarget.StandaloneWindows64);
-            //EditorUtility.DisplayDialog("Create Stage", "Stage created in\r\n" + path, "Ok!!");
-        }
-        else
-        {
-            //EditorUtility.DisplayDialog("Create Stage", "no path selected!!", "Ok.. I'll try again");
         }
     }
 
@@ -159,14 +98,10 @@ public class ExportStages
             xml.Settings[TRAILS].WriteFloat("trailBump", s.TrailBump);
 
             var SMOKE = string.Format("SurfaceLibrary/Surface#{0}/Smoke", i + 1);
-            xml.Settings[SMOKE].WriteString("smokeStart", c4(s.SmokeStart));
-            xml.Settings[SMOKE].WriteString("smokeStartVariation", c4(s.SmokeStartVariation));
-            xml.Settings[SMOKE].WriteString("smokeEnd", c4(s.SmokeEnd));
-            xml.Settings[SMOKE].WriteString("smokeEndVariation", c4(s.SmokeEndVariation));
             xml.Settings[SMOKE].WriteVector2("lifeTime", v2(s.LifeTime));
-            xml.Settings[SMOKE].WriteVector2("speed", v2(s.Speed));
-            xml.Settings[SMOKE].WriteVector2("sizeStart", v2(s.SizeStart));
-            xml.Settings[SMOKE].WriteVector2("sizeEnd", v2(s.SizeEnd));
+            xml.Settings[SMOKE].WriteVector2("size", v2(s.Size));
+            xml.Settings[SMOKE].WriteFloat("gravity", s.Gravity);
+            xml.Settings[SMOKE].WriteString("gradient", gradient(s.GradientColor));
         }
     }
 
@@ -249,14 +184,29 @@ public class ExportStages
                 {
                     if (mat.shader.name.Contains("gRally/Phys"))
                     {
-                        var tex = mat.GetTexture("_PhysMap");
-                        var texWet = mat.GetTexture("_MainTex");
+                        Texture tex = null;
+                        Texture texWet = null;
+                        int shaderVer = 0;
+                        if (mat.shader.name.EndsWith("1"))
+                        {
+                            shaderVer = 1;
+                            tex = mat.GetTexture("_PhysMap");
+                            texWet = mat.GetTexture("_MainTex");
+                            xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteFloat("maxDisplacement", 0.0f);
+                        }
+                        else if (mat.shader.name.EndsWith("2"))
+                        {
+                            shaderVer = 2;
+                            tex = mat.GetTexture("_PhysicalTexture");
+                            texWet = mat.GetTexture("_RSpecGTransparencyBAOAWetMap");
+                            xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteFloat("maxDisplacement", mat.GetFloat("_MaxDisplacementmeters"));
+                        }
                         if (tex != null)
                         {
                             if (!matExported.Contains(mat.name))
                             {
                                 getPhysicsData(idMat, tex as Texture2D, mat.name, ref xml, ref stage);
-                                getWetData(idMat, texWet as Texture2D, ref xml);
+                                getWetData(idMat, texWet as Texture2D, shaderVer, mat.name, ref xml);
                                 idMat++;
                                 matExported.Add(mat.name);
                             }
@@ -267,7 +217,7 @@ public class ExportStages
         }
     }
 
-    static void getWetData(int idMat, Texture2D tex, ref gUtility.CXml xml)
+    static void getWetData(int idMat, Texture2D tex, int shaderVersion, string materialName, ref gUtility.CXml xml)
     {
         if (tex == null)
         {
@@ -283,24 +233,42 @@ public class ExportStages
         AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
 
         float[,] colors = new float[16, 16];
-        int stepPx = tex.width / 16;
-        int firstPx = stepPx / 2;
-        int addPx = stepPx / 3;
 
-        for (int x = 0; x < 16; x++)
+        // save the new texture
+        var debugTex = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 0, true);
+        Graphics.CopyTexture(tex, debugTex);
+        debugTex.Apply();
+        debugTex = scaleTexture(debugTex, 16, 16);
+
+        for (int y = 0; y < 16; y++)
         {
-            for (int y = 0; y < 16; y++)
+            for (int x = 0; x < 16; x++)
             {
-                var centerColor = tex.GetPixel(x * stepPx + firstPx, y * stepPx + firstPx).a;
-                var c1 = tex.GetPixel(x * stepPx + firstPx - addPx, y * stepPx + firstPx - addPx).a;
-                var c2 = tex.GetPixel(x * stepPx + firstPx - addPx, y * stepPx + firstPx + addPx).a;
-                var c3 = tex.GetPixel(x * stepPx + firstPx + addPx, y * stepPx + firstPx - addPx).a;
-                var c4 = tex.GetPixel(x * stepPx + firstPx + addPx, y * stepPx + firstPx + addPx).a;
-
-                var wet = (centerColor * 3 + c1 + c2 + c3 + c4) / 7.0f;
+                var color = debugTex.GetPixel(x, y);
+                var wet = color.a;
+                if (shaderVersion == 2)
+                {
+                    wet = 1.0f + wet * -1.0f;
+                }
+                debugTex.SetPixel(x, y, new Color(wet, wet, wet, 1.0f));
                 colors[x, y] = wet;
             }
         }
+        debugTex.Apply();
+
+        var texName = string.Format("Assets/PhysTextures/wet_{0}.png", materialName);
+        if (!Directory.Exists("Assets/PhysTextures"))
+        {
+            Directory.CreateDirectory("Assets/PhysTextures");
+        }
+
+        if (File.Exists(texName))
+        {
+            File.Delete(texName);
+        }
+        byte[] bytes = debugTex.EncodeToPNG();
+        File.WriteAllBytes(texName, bytes);
+
         string retWet = "";
         for (int y = 0; y < 16; y++)
         {
@@ -309,7 +277,23 @@ public class ExportStages
                 retWet += colors[x, y].ToString() + " ";
             }
         }
+
         xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteString("wet", retWet.Trim());
+    }
+
+    static Texture2D scaleTexture(Texture2D source, int targetWidth, int targetHeight)
+    {
+        Texture2D result = new Texture2D(targetWidth, targetHeight);
+        Color[] rpixels = result.GetPixels();
+        float incX = ((float)1 / source.width) * ((float)source.width / targetWidth);
+        float incY = ((float)1 / source.height) * ((float)source.height / targetHeight);
+        for (int px = 0; px < rpixels.Length; px++)
+        {
+            rpixels[px] = source.GetPixelBilinear(incX * ((float)px % targetWidth), incY * Mathf.Floor((float)px / targetWidth));
+        }
+        result.SetPixels(rpixels);
+        result.Apply();
+        return result;
     }
 
     static void getPhysicsData(int idMat, Texture2D tex, string materialName, ref gUtility.CXml xml, ref StageData stage)
@@ -324,7 +308,7 @@ public class ExportStages
         {
             return;
         }
-        A.linearTexture = true;
+        A.sRGBTexture = true;
         A.isReadable = true;
         A.mipmapEnabled = false;
         A.filterMode = FilterMode.Point;
@@ -489,5 +473,24 @@ public class ExportStages
     static gUtility.Vector2 v2(Vector2 value)
     {
         return new gUtility.Vector2(value.x, value.y);
+    }
+
+    static string gradient(Gradient color)
+    {
+        var ret = string.Format("{0};", color.colorKeys.Length);
+        foreach (var k in color.colorKeys)
+        {
+            ret += string.Format("{0}_{1};", c4(k.color), k.time.ToString(CultureInfo.InvariantCulture.NumberFormat));
+        }
+        ret = ret.Remove(ret.Length - 1);
+
+        ret += string.Format("|{0};", color.alphaKeys.Length);
+        foreach (var a in color.alphaKeys)
+        {
+            ret += string.Format("{0}_{1};", a.alpha.ToString(CultureInfo.InvariantCulture.NumberFormat), a.time.ToString(CultureInfo.InvariantCulture.NumberFormat));
+        }
+        ret = ret.Remove(ret.Length - 1);
+        ret += string.Format("|{0}", Convert.ToInt32(color.mode));
+        return ret;
     }
 }

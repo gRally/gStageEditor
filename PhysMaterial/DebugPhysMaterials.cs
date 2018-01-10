@@ -4,7 +4,7 @@ using System.Collections;
 [ExecuteInEditMode]
 public class DebugPhysMaterials : MonoBehaviour
 {
-    [Range(0.0f, 2.0f)]
+    [Range(0.0f, 1.0f)]
     public float Wet;
     private float _wet;
 
@@ -16,7 +16,12 @@ public class DebugPhysMaterials : MonoBehaviour
     public float PhysDebug;
     private float _physDebug;
 
-	void Update ()
+    [Range(0.0f, 1.0f)]
+    public float Displacement;
+    private float _displacement;
+
+
+    void Update ()
     {
         if (_wet != Wet)
         {
@@ -34,6 +39,12 @@ public class DebugPhysMaterials : MonoBehaviour
         {
             Shader.SetGlobalFloat("_GR_PhysDebug", PhysDebug);
             _physDebug = PhysDebug;
+        }
+
+        if (_displacement != Displacement)
+        {
+            Shader.SetGlobalFloat("_GR_Displacement", Displacement);
+            _displacement = Displacement;
         }
     }
 }

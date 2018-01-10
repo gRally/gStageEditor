@@ -10,7 +10,19 @@ public class MenuStages
 {
     static string assetPath = "Assets/Stage.data.asset";
 
-    [MenuItem("gRally/Create default stage data", false, 1)]
+    [MenuItem("gRally/1. Create Layers", false, 1)]
+    public static void CreateLayers()
+    {
+        if (File.Exists("ProjectSettings/TagManager.asset"))
+        {
+            File.Move("ProjectSettings/TagManager.asset", "ProjectSettings/TagManager.asset.bak");
+        }
+        File.Copy("Assets/gStageEditor/Resources/TagManager.asset.txt", "ProjectSettings/TagManager.asset");
+        Debug.Log("Layers file created successfully.");
+        Debug.Log("Remember to save the Project to validate the changes.");
+    }
+
+    [MenuItem("gRally/2. Create default stage data", false, 2)]
     public static void GenerateStageData()
     {
         StageData asset = ScriptableObject.CreateInstance<StageData>();
@@ -26,7 +38,7 @@ public class MenuStages
         Debug.Log(string.Format("Stage data in {0} is created successfully.", assetPath));
     }
 
-    [MenuItem("gRally/Create main, stage and layout0 scenes", false, 2)]
+    [MenuItem("gRally/3. Create main, stage and layout0 scenes", false, 3)]
     public static void CreateMainScene()
     {
         if (!Directory.Exists("Assets/Scenes"))
@@ -97,7 +109,7 @@ public class MenuStages
         SceneManager.SetActiveScene(SceneManager.GetSceneByName("main"));
     }
 
-    [MenuItem("gRally/Create new layout", false, 3)]
+    [MenuItem("gRally/4. Create new layout", false, 4)]
     public static void CreateNewLayout()
     {
         if (!Directory.Exists("Assets/Scenes"))
@@ -156,14 +168,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 2.0f);
         newItem.TrailColor = new Color32(125, 125, 125, 255);
         newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(230, 230, 230, 255);
-        newItem.SmokeStartVariation = new Color32(26, 26, 38, 255);
-        newItem.SmokeEnd = new Color32(204, 204, 204, 255);
-        newItem.SmokeEndVariation = new Color32(51, 51, 51, 255);
-        newItem.LifeTime = new Vector2(4.0f, 1.0f);
-        newItem.Speed = new Vector2(0.4f, 0.1f);
-        newItem.SizeStart = new Vector2(0.5f, 0.6f);
-        newItem.SizeEnd = new Vector2(1.5f, 0.75f);
+        newItem.Gravity = -0.02f;
+        newItem.GradientColor = new Gradient();
+        var gck = new GradientColorKey[2];
+        gck[0].color = new Color32(152, 152, 152, 255);
+        gck[0].time = 0.0f;
+        gck[1].color = new Color32(225, 225, 225, 255);
+        gck[1].time = 1.0f;
+        var gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.6f;
+        gak[0].time = 0.0f;
+        gak[1].alpha = 0.48f;
+        gak[1].time = 0.574f;
+        gak[2].alpha = 0.0f;
+        gak[2].time = 1.0f;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.0f, 0.8f);
+        newItem.LifeTime = new Vector2(0.0f, 1.2f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -176,14 +198,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 2.0f);
         newItem.TrailColor = new Color32(125, 125, 125, 255);
         newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(230, 230, 230, 255);
-        newItem.SmokeStartVariation = new Color32(26, 26, 38, 255);
-        newItem.SmokeEnd = new Color32(204, 204, 204, 255);
-        newItem.SmokeEndVariation = new Color32(51, 51, 51, 255);
-        newItem.LifeTime = new Vector2(4.0f, 1.0f);
-        newItem.Speed = new Vector2(0.4f, 0.1f);
-        newItem.SizeStart = new Vector2(0.5f, 0.6f);
-        newItem.SizeEnd = new Vector2(1.5f, 0.75f);
+        newItem.Gravity = -0.02f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(152, 152, 152, 255);
+        gck[0].time = 0.0f;
+        gck[1].color = new Color32(225, 225, 225, 255);
+        gck[1].time = 1.0f;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.6f;
+        gak[0].time = 0.0f;
+        gak[1].alpha = 0.48f;
+        gak[1].time = 0.574f;
+        gak[2].alpha = 0.0f;
+        gak[2].time = 1.0f;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.0f, 0.8f);
+        newItem.LifeTime = new Vector2(0.0f, 1.2f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -196,14 +228,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 2.0f);
         newItem.TrailColor = new Color32(125, 125, 125, 255);
         newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(230, 230, 230, 255);
-        newItem.SmokeStartVariation = new Color32(26, 26, 38, 255);
-        newItem.SmokeEnd = new Color32(204, 204, 204, 255);
-        newItem.SmokeEndVariation = new Color32(51, 51, 51, 255);
-        newItem.LifeTime = new Vector2(4.0f, 1.0f);
-        newItem.Speed = new Vector2(0.4f, 0.1f);
-        newItem.SizeStart = new Vector2(0.5f, 0.6f);
-        newItem.SizeEnd = new Vector2(1.5f, 0.75f);
+        newItem.Gravity = -0.02f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(152, 152, 152, 255);
+        gck[0].time = 0.0f;
+        gck[1].color = new Color32(225, 225, 225, 255);
+        gck[1].time = 1.0f;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.6f;
+        gak[0].time = 0.0f;
+        gak[1].alpha = 0.48f;
+        gak[1].time = 0.574f;
+        gak[2].alpha = 0.0f;
+        gak[2].time = 1.0f;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.0f, 0.8f);
+        newItem.LifeTime = new Vector2(0.0f, 1.2f);
         stage.surfaceList.Add(newItem);
 
         // gravel
@@ -217,14 +259,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 10.0f);
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(242, 188, 84, 255);
-        newItem.SmokeStartVariation = new Color32(102, 0, 0, 255);
-        newItem.SmokeEnd = new Color32(204, 160, 75, 255);
-        newItem.SmokeEndVariation = new Color32(111, 64, 0, 255);
-        newItem.LifeTime = new Vector2(5.0f, 2.0f);
-        newItem.Speed = new Vector2(0.35f, 0.25f);
-        newItem.SizeStart = new Vector2(3.5f, 2.5f);
-        newItem.SizeEnd = new Vector2(28.0f, 15.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(234, 229, 223, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(239, 239, 239, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.55F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.5F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.60f, 4.0f);
+        newItem.LifeTime = new Vector2(0.05f, 5.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -237,14 +289,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 10.0f);
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(242, 188, 84, 255);
-        newItem.SmokeStartVariation = new Color32(102, 0, 0, 255);
-        newItem.SmokeEnd = new Color32(204, 160, 75, 255);
-        newItem.SmokeEndVariation = new Color32(111, 64, 0, 255);
-        newItem.LifeTime = new Vector2(5.0f, 2.0f);
-        newItem.Speed = new Vector2(0.35f, 0.25f);
-        newItem.SizeStart = new Vector2(3.5f, 2.5f);
-        newItem.SizeEnd = new Vector2(28.0f, 15.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(234, 229, 223, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(239, 239, 239, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.55F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.5F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.60f, 4.0f);
+        newItem.LifeTime = new Vector2(0.05f, 5.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -257,14 +319,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 10.0f);
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(242, 188, 84, 255);
-        newItem.SmokeStartVariation = new Color32(102, 0, 0, 255);
-        newItem.SmokeEnd = new Color32(204, 160, 75, 255);
-        newItem.SmokeEndVariation = new Color32(111, 64, 0, 255);
-        newItem.LifeTime = new Vector2(5.0f, 2.0f);
-        newItem.Speed = new Vector2(0.35f, 0.25f);
-        newItem.SizeStart = new Vector2(3.5f, 2.5f);
-        newItem.SizeEnd = new Vector2(28.0f, 15.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(234, 229, 223, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(239, 239, 239, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.55F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.5F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.60f, 4.0f);
+        newItem.LifeTime = new Vector2(0.05f, 5.0f);
         stage.surfaceList.Add(newItem);
 
         // mud
@@ -278,14 +350,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 12.0f);
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -2.0f;
-        newItem.SmokeStart = new Color32(242, 188, 84, 255);
-        newItem.SmokeStartVariation = new Color32(102, 0, 0, 255);
-        newItem.SmokeEnd = new Color32(204, 160, 75, 255);
-        newItem.SmokeEndVariation = new Color32(111, 64, 0, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(118, 62, 62, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(118, 62, 62, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.4F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.35F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.30f, 0.5f);
+        newItem.LifeTime = new Vector2(0.05f, 2.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -298,14 +380,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 12.0f);
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -2.0f;
-        newItem.SmokeStart = new Color32(242, 188, 84, 255);
-        newItem.SmokeStartVariation = new Color32(102, 0, 0, 255);
-        newItem.SmokeEnd = new Color32(204, 160, 75, 255);
-        newItem.SmokeEndVariation = new Color32(111, 64, 0, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(118, 62, 62, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(118, 62, 62, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.4F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.35F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.30f, 0.5f);
+        newItem.LifeTime = new Vector2(0.05f, 2.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -318,14 +410,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 12.0f);
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -2.0f;
-        newItem.SmokeStart = new Color32(242, 188, 84, 255);
-        newItem.SmokeStartVariation = new Color32(102, 0, 0, 255);
-        newItem.SmokeEnd = new Color32(204, 160, 75, 255);
-        newItem.SmokeEndVariation = new Color32(111, 64, 0, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(118, 62, 62, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(118, 62, 62, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.4F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.35F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.30f, 0.5f);
+        newItem.LifeTime = new Vector2(0.05f, 2.0f);
         stage.surfaceList.Add(newItem);
 
         // grass
@@ -339,14 +441,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 10.0f);
         newItem.TrailColor = new Color32(30, 66, 30, 165);
         newItem.TrailBump = -2.0f;
-        newItem.SmokeStart = new Color32(242, 188, 84, 255);
-        newItem.SmokeStartVariation = new Color32(102, 0, 0, 255);
-        newItem.SmokeEnd = new Color32(204, 160, 75, 255);
-        newItem.SmokeEndVariation = new Color32(111, 64, 0, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(26, 90, 26, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(0, 255, 0, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 1.0F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 1.0F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.0f, 0.0f);
+        newItem.LifeTime = new Vector2(0.0f, 0.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -359,14 +471,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 10.0f);
         newItem.TrailColor = new Color32(30, 66, 30, 165);
         newItem.TrailBump = -2.0f;
-        newItem.SmokeStart = new Color32(242, 188, 84, 255);
-        newItem.SmokeStartVariation = new Color32(102, 0, 0, 255);
-        newItem.SmokeEnd = new Color32(204, 160, 75, 255);
-        newItem.SmokeEndVariation = new Color32(111, 64, 0, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(26, 90, 26, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(0, 255, 0, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 1.0F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 1.0F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.0f, 0.0f);
+        newItem.LifeTime = new Vector2(0.0f, 0.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -379,14 +501,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 10.0f);
         newItem.TrailColor = new Color32(30, 66, 30, 165);
         newItem.TrailBump = -2.0f;
-        newItem.SmokeStart = new Color32(242, 188, 84, 255);
-        newItem.SmokeStartVariation = new Color32(102, 0, 0, 255);
-        newItem.SmokeEnd = new Color32(204, 160, 75, 255);
-        newItem.SmokeEndVariation = new Color32(111, 64, 0, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(26, 90, 26, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(0, 255, 0, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 1.0F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 1.0F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.0f, 0.0f);
+        newItem.LifeTime = new Vector2(0.0f, 0.0f);
         stage.surfaceList.Add(newItem);
 
         // snow
@@ -400,14 +532,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 10.0f);
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -2.0f;
-        newItem.SmokeStart = new Color32(242, 242, 255, 255);
-        newItem.SmokeStartVariation = new Color32(10, 10, 10, 255);
-        newItem.SmokeEnd = new Color32(250, 250, 250, 255);
-        newItem.SmokeEndVariation = new Color32(10, 10, 10, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(235, 255, 255, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(239, 239, 239, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.55F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.5F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.60f, 4.0f);
+        newItem.LifeTime = new Vector2(0.05f, 5.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -420,14 +562,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 10.0f);
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -2.0f;
-        newItem.SmokeStart = new Color32(242, 242, 255, 255);
-        newItem.SmokeStartVariation = new Color32(10, 10, 10, 255);
-        newItem.SmokeEnd = new Color32(250, 250, 250, 255);
-        newItem.SmokeEndVariation = new Color32(10, 10, 10, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(235, 255, 255, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(239, 239, 239, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.55F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.5F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.60f, 4.0f);
+        newItem.LifeTime = new Vector2(0.05f, 5.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -440,14 +592,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 10.0f);
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -2.0f;
-        newItem.SmokeStart = new Color32(242, 242, 255, 255);
-        newItem.SmokeStartVariation = new Color32(10, 10, 10, 255);
-        newItem.SmokeEnd = new Color32(250, 250, 250, 255);
-        newItem.SmokeEndVariation = new Color32(10, 10, 10, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(235, 255, 255, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(239, 239, 239, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.55F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.5F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.60f, 4.0f);
+        newItem.LifeTime = new Vector2(0.05f, 5.0f);
         stage.surfaceList.Add(newItem);
 
         // ice
@@ -461,14 +623,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 4.0f);
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(242, 242, 255, 255);
-        newItem.SmokeStartVariation = new Color32(10, 10, 10, 255);
-        newItem.SmokeEnd = new Color32(250, 250, 250, 255);
-        newItem.SmokeEndVariation = new Color32(10, 10, 10, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(197, 255, 255, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(197, 255, 255, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.4F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.35F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.30f, 0.5f);
+        newItem.LifeTime = new Vector2(0.05f, 2.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -481,14 +653,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 4.0f);
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(242, 242, 255, 255);
-        newItem.SmokeStartVariation = new Color32(10, 10, 10, 255);
-        newItem.SmokeEnd = new Color32(250, 250, 250, 255);
-        newItem.SmokeEndVariation = new Color32(10, 10, 10, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(197, 255, 255, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(197, 255, 255, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.4F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.35F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.30f, 0.5f);
+        newItem.LifeTime = new Vector2(0.05f, 2.0f);
         stage.surfaceList.Add(newItem);
 
         newItem = new Surface();
@@ -501,14 +683,24 @@ public class MenuStages
         newItem.Bump = new Vector2(0.0f, 4.0f);
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -1.0f;
-        newItem.SmokeStart = new Color32(242, 242, 255, 255);
-        newItem.SmokeStartVariation = new Color32(10, 10, 10, 255);
-        newItem.SmokeEnd = new Color32(250, 250, 250, 255);
-        newItem.SmokeEndVariation = new Color32(10, 10, 10, 255);
-        newItem.LifeTime = new Vector2(6.0f, 2.0f);
-        newItem.Speed = new Vector2(0.2f, 0.05f);
-        newItem.SizeStart = new Vector2(1.5f, 1.0f);
-        newItem.SizeEnd = new Vector2(25.0f, 10.0f);
+        newItem.Gravity = 0.0f;
+        newItem.GradientColor = new Gradient();
+        gck = new GradientColorKey[2];
+        gck[0].color = new Color32(197, 255, 255, 255);
+        gck[0].time = 0.0F;
+        gck[1].color = new Color32(197, 255, 255, 255);
+        gck[1].time = 1.0F;
+        gak = new GradientAlphaKey[3];
+        gak[0].alpha = 0.4F;
+        gak[0].time = 0.0F;
+        gak[1].alpha = 0.35F;
+        gak[1].time = 0.574F;
+        gak[2].alpha = 0.0F;
+        gak[2].time = 1.0F;
+        newItem.GradientColor.mode = GradientMode.Blend;
+        newItem.GradientColor.SetKeys(gck, gak);
+        newItem.Size = new Vector2(0.30f, 0.5f);
+        newItem.LifeTime = new Vector2(0.05f, 2.0f);
         stage.surfaceList.Add(newItem);
     }
 }

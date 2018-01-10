@@ -8,6 +8,7 @@ public class PhysMaterialItem
     public string itemName = "New Item";
     public Texture2D physMaterial = null;
     public Texture2D renderMaterial = null;
+    public int Version = 1;
     public float Opacity = 0.65f;
     public List<bool> EditX = new List<bool>() { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
     public List<bool> EditY = new List<bool>() { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };

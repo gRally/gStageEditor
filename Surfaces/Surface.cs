@@ -18,9 +18,10 @@ public class Surface
         ICE
     }
 
-    public SURFACE_TYPE Type;
     public string Name;
+    public SURFACE_TYPE Type;
     public Color PhysColor;
+
     [Header("Physics"), Range(0.0f, 1.0f)]
     public float UsableGrip;
     public float Rolling;
@@ -28,18 +29,14 @@ public class Surface
     public Vector2 Bump;
 
     [Header("Trails:")]
-    [Space(5)]
     public Color TrailColor;
     public float TrailBump;
 
     [Header("Smoke:")]
-    [Space(5)]
-    public Color SmokeStart;
-    public Color SmokeStartVariation;
-    public Color SmokeEnd;
-    public Color SmokeEndVariation;
+    public Gradient GradientColor;
+    [Tooltip("min and max lifetime")]
     public Vector2 LifeTime;
-    public Vector2 Speed;
-    public Vector2 SizeStart;
-    public Vector2 SizeEnd;
+    [Tooltip("min and max size")]
+    public Vector2 Size;
+    public float Gravity;
 }

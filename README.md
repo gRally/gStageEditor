@@ -1,3 +1,9 @@
+### v1.3.0 - 2018/01/10
+ - Built with Unity 2017.3.0p1;
+ - Creation of layers with the menu;
+ - New road v2 (to manage displacement);
+ - New surface export informations;
+
 ### v1.2.1 - 2017/11/17
  - Fixed start/finish banner size.
 

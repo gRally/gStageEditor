@@ -51,8 +51,19 @@ public class EditPhysMaterial : EditorWindow
                         {
                             PhysMaterialItem item = new PhysMaterialItem();
                             item.itemName = mat.name;
-                            item.physMaterial = mat.GetTexture("_PhysMap") as Texture2D;
-                            item.renderMaterial = mat.GetTexture("_MainTex") as Texture2D;
+                            if (mat.shader.name.EndsWith("1"))
+                            {
+                                item.Version = 1;
+                                item.physMaterial = mat.GetTexture("_PhysMap") as Texture2D;
+                                item.renderMaterial = mat.GetTexture("_MainTex") as Texture2D;
+                            }
+                            else if (mat.shader.name.EndsWith("2"))
+                            {
+                                item.Version = 2;
+                                item.physMaterial = mat.GetTexture("_PhysicalTexture") as Texture2D;
+                                item.renderMaterial = mat.GetTexture("_AlbedowithSmoothnessMap") as Texture2D;
+                            }
+
                             matList.physMaterialList.Add(item);
                         }
                     }
@@ -220,7 +231,14 @@ public class EditPhysMaterial : EditorWindow
                                 if (mat.name == matList.physMaterialList[viewIndex - 1].itemName)
                                 {
                                     var tex = AssetDatabase.LoadAssetAtPath<Texture>(texName);
-                                    mat.SetTexture("_PhysMap", tex);
+                                    if (matList.physMaterialList[viewIndex - 1].Version == 1)
+                                    {
+                                        mat.SetTexture("_PhysMap", tex);
+                                    }
+                                    else if (matList.physMaterialList[viewIndex - 1].Version == 2)
+                                    {
+                                        mat.SetTexture("_PhysicalTexture", tex);
+                                    }
                                     AssetDatabase.Refresh();
                                 }
                             }
