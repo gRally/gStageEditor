@@ -1,3 +1,6 @@
+### v1.4.0 - 2018/01/18
+- Updated the start and finish banner;
+
 ### v1.3.0 - 2018/01/10
  - Built with Unity 2017.3.0p1;
  - Creation of layers with the menu;
@@ -21,5 +24,3 @@
 
 ### v1.0.0 - 2017/08/16
  - First release.
-
-.
