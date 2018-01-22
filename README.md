@@ -1,3 +1,6 @@
+### v1.5.0 - 2018/01/22
+- New layout path manager, better way to edit the path;
+
 ### v1.4.0 - 2018/01/18
 - Updated the start and finish banner;
 
