@@ -63,6 +63,7 @@ public class LayoutPathEditor : Editor
                     Undo.RecordObject(layoutPath, "Insert Node");
                     layoutPath.points.Insert(nodeIndex + 1, newPoint);
                     Event.current.Use();
+                    layoutPath.calcLength();
                 }
             }
             else
@@ -72,6 +73,7 @@ public class LayoutPathEditor : Editor
                     Undo.RecordObject(layoutPath, "Insert Node");
                     layoutPath.points.Add(newPoint);
                     Event.current.Use();
+                    layoutPath.calcLength();
                 }
             }
         }
@@ -88,6 +90,7 @@ public class LayoutPathEditor : Editor
                 layoutPath.points.RemoveAt(indexToDelete);
                 indexToDelete = -1;
                 Event.current.Use();
+                layoutPath.calcLength();
             }
 
             Handles.color = Color.white;
@@ -135,6 +138,7 @@ public class LayoutPathEditor : Editor
                 //CheckAlignment(worldPoints, handleSize * 0.1f, i, ref newPos);
                 Undo.RecordObject(layoutPath, "Move Node");
                 layoutPath.points[i] = layoutPath.transform.InverseTransformPoint(newPos);
+                layoutPath.calcLength();
             }
         }
     }
@@ -244,6 +248,10 @@ public class LayoutPathEditor : Editor
         GUI.backgroundColor = new Color(0.0f, 0.8f, 0.5176f);
         GUILayout.Label("Import from Sentieri waypoints", EditorStyles.boldLabel);
         if (GUILayout.Button("Create path")) layoutPath.GenerateFromWaypoints();
+
+        GUILayout.Space(10);
+        GUI.backgroundColor = new Color32(115, 242, 252, 255);
+        if (GUILayout.Button("Update Length")) layoutPath.calcLength();
 
         GUILayout.Space(10);
         GUILayout.Label("Utility", EditorStyles.boldLabel);

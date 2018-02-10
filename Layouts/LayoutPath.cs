@@ -156,7 +156,7 @@ public class LayoutPath : MonoBehaviour
         }
     }
 
-    private void calcLength()
+    public void calcLength()
     {
         Length = 0;
         segments.Clear();
