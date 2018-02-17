@@ -74,6 +74,12 @@ public class ReplayCamera : MonoBehaviour {
 
     void OnDrawGizmosSelected()
     {
+#if UNITY_EDITOR
+        if (UnityEditor.Selection.activeGameObject != transform.gameObject)
+        {
+            return;
+        }
+#endif        
         if (true)
         {
             float dofNearM = DofNearLimit * 0.3048f;// feet to meters
