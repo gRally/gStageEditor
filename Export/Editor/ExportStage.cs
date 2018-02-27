@@ -66,7 +66,6 @@ public class ExportStages
             stageXml.Commit();
             // 5: rollback the textures edited:
             // not at the moment... rollbackEditTextures();
-
             // 6: build stage!
             BuildPipeline.BuildAssetBundles(path, BuildAssetBundleOptions.ForceRebuildAssetBundle, BuildTarget.StandaloneWindows64);
             EditorUtility.DisplayDialog("Create Stage", "Stage created in\r\n" + path, "Ok!!");
@@ -186,6 +185,8 @@ public class ExportStages
                     {
                         Texture tex = null;
                         Texture texWet = null;
+                        Texture texPuddles = null;
+                        float puddlesSize = 1.0f;
                         int shaderVer = 0;
                         if (mat.shader.name.EndsWith("1"))
                         {
@@ -199,6 +200,8 @@ public class ExportStages
                             shaderVer = 2;
                             tex = mat.GetTexture("_PhysicalTexture");
                             texWet = mat.GetTexture("_RSpecGTransparencyBAOAWetMap");
+                            texPuddles = mat.GetTexture("_PuddlesTexture");
+                            puddlesSize = mat.GetFloat("_PuddlesSize");
                             xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteFloat("maxDisplacement", mat.GetFloat("_MaxDisplacementmeters"));
                         }
                         if (tex != null)
@@ -206,7 +209,11 @@ public class ExportStages
                             if (!matExported.Contains(mat.name))
                             {
                                 getPhysicsData(idMat, tex as Texture2D, mat.name, ref xml, ref stage);
-                                getWetData(idMat, texWet as Texture2D, shaderVer, mat.name, ref xml);
+                                getWetData(idMat, texWet as Texture2D, 16, mat.name, ref xml);
+                                if (texPuddles != null)
+                                {
+                                     getPuddlesData(idMat, texPuddles as Texture2D, 32, mat.name, puddlesSize, ref xml);
+                                }
                                 idMat++;
                                 matExported.Add(mat.name);
                             }
@@ -217,7 +224,7 @@ public class ExportStages
         }
     }
 
-    static void getWetData(int idMat, Texture2D tex, int shaderVersion, string materialName, ref gUtility.CXml xml)
+    static void getWetData(int idMat, Texture2D tex, int wetSize, string materialName, ref gUtility.CXml xml)
     {
         if (tex == null)
         {
@@ -232,24 +239,26 @@ public class ExportStages
         A.isReadable = true;
         AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
 
-        float[,] colors = new float[16, 16];
+        float[,] colors = new float[wetSize, wetSize];
 
         // save the new texture
         var debugTex = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 0, true);
         Graphics.CopyTexture(tex, debugTex);
         debugTex.Apply();
-        debugTex = scaleTexture(debugTex, 16, 16);
+        debugTex = scaleTexture(debugTex, wetSize, wetSize);
 
-        for (int y = 0; y < 16; y++)
+        for (int y = 0; y < wetSize; y++)
         {
-            for (int x = 0; x < 16; x++)
+            for (int x = 0; x < wetSize; x++)
             {
                 var color = debugTex.GetPixel(x, y);
                 var wet = color.a;
+                /*
                 if (shaderVersion == 2)
                 {
                     wet = 1.0f + wet * -1.0f;
                 }
+                */
                 debugTex.SetPixel(x, y, new Color(wet, wet, wet, 1.0f));
                 colors[x, y] = wet;
             }
@@ -270,15 +279,128 @@ public class ExportStages
         File.WriteAllBytes(texName, bytes);
 
         string retWet = "";
-        for (int y = 0; y < 16; y++)
+        for (int y = 0; y < wetSize; y++)
         {
-            for (int x = 0; x < 16; x++)
+            for (int x = 0; x < wetSize; x++)
             {
                 retWet += colors[x, y].ToString() + " ";
             }
         }
 
         xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteString("wet", retWet.Trim());
+    }
+
+    static void getPuddlesData(int idMat, Texture2D tex, int wetSize, string materialName, float puddleSize, ref gUtility.CXml xml)
+    {
+        if (tex == null)
+        {
+            return;
+        }
+        string path = AssetDatabase.GetAssetPath(tex);
+        TextureImporter A = (TextureImporter)AssetImporter.GetAtPath(path);
+        if (A == null)
+        {
+            return;
+        }
+        A.isReadable = true;
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+
+        float[,] colors = new float[wetSize * 2, wetSize * 2];
+
+        // save the new texture
+        var debugTexR = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 0, true);
+        Graphics.CopyTexture(tex, debugTexR);
+        debugTexR.Apply();
+        debugTexR = scaleTexture(debugTexR, wetSize, wetSize);
+
+        var debugTexG = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 0, true);
+        Graphics.CopyTexture(tex, debugTexG);
+        debugTexG.Apply();
+        debugTexG = scaleTexture(debugTexG, wetSize, wetSize);
+
+        var debugTexB = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 0, true);
+        Graphics.CopyTexture(tex, debugTexB);
+        debugTexB.Apply();
+        debugTexB = scaleTexture(debugTexB, wetSize, wetSize);
+
+        var debugTexA = new Texture2D(tex.width, tex.height, tex.format, tex.mipmapCount > 0, true);
+        Graphics.CopyTexture(tex, debugTexA);
+        debugTexA.Apply();
+        debugTexA = scaleTexture(debugTexA, wetSize, wetSize);
+
+        var debugTex = new Texture2D(wetSize * 2, wetSize * 2, TextureFormat.ARGB32, false);
+
+        /*
+         * |B|A|
+         * -----
+         * |R|G|
+         */
+        for (int y = 0; y < wetSize * 2; y++)
+        {
+            for (int x = 0; x < wetSize * 2; x++)
+            {
+                if (x < wetSize)
+                {
+                    if (y < wetSize)
+                    {
+                        // R
+                        var color = debugTexR.GetPixel(x, y);
+                        var wet = color.r;
+                        debugTex.SetPixel(x, y, new Color(wet, wet, wet, 1.0f));
+                        colors[x, y] = wet;
+                    }
+                    else
+                    {
+                        // B
+                        var color = debugTexB.GetPixel(x, y - wetSize);
+                        var wet = color.b;
+                        debugTex.SetPixel(x, y, new Color(wet, wet, wet, 1.0f));
+                        colors[x, y] = wet;
+                    }
+                }
+                else
+                {
+                    if (y < wetSize)
+                    {
+                        // G
+                        var color = debugTexG.GetPixel(x - wetSize, y);
+                        var wet = color.g;
+                        debugTex.SetPixel(x, y, new Color(wet, wet, wet, 1.0f));
+                        colors[x, y] = wet;
+                    }
+                    else
+                    {
+                        // A
+                        var color = debugTexA.GetPixel(x - wetSize, y - wetSize);
+                        var wet = color.a;
+                        debugTex.SetPixel(x, y, new Color(wet, wet, wet, 1.0f));
+                        colors[x, y] = wet;
+                    }
+                }
+            }
+        }
+        debugTex.Apply();
+
+        if (!Directory.Exists("Assets/PhysTextures"))
+        {
+            Directory.CreateDirectory("Assets/PhysTextures");
+        }
+        var texName = string.Format("Assets/PhysTextures/puddles_{0}.png", materialName);
+        if (File.Exists(texName)) File.Delete(texName);
+        byte[] bytes = debugTex.EncodeToPNG();
+        File.WriteAllBytes(texName, bytes);
+
+        string retWet = "";
+        for (int y = 0; y < wetSize; y++)
+        {
+            for (int x = 0; x < wetSize; x++)
+            {
+                retWet += colors[x, y].ToString() + " ";
+            }
+        }
+
+        xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteFloat("puddlesSize", puddleSize);
+        xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteString("puddles", retWet.Trim());
     }
 
     static Texture2D scaleTexture(Texture2D source, int targetWidth, int targetHeight)
