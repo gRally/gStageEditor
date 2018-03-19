@@ -235,9 +235,7 @@ public class LayoutPathEditor : Editor
         GUI.backgroundColor = new Color32(157, 220, 207, 255);
         if (GUILayout.Button("Import XML"))
         {
-            var path = EditorUtility.OpenFilePanel("Select the XML that contains the spline path points",
-                "",
-                "xml");
+            var path = EditorUtility.OpenFilePanel("Select the XML that contains the spline path points", "", "xml");
             if (path.Length != 0)
             {
                 layoutPath.BuildObject(path);
@@ -248,13 +246,31 @@ public class LayoutPathEditor : Editor
         GUI.backgroundColor = new Color(0.0f, 0.8f, 0.5176f);
         GUILayout.Label("Import from Sentieri waypoints", EditorStyles.boldLabel);
         if (GUILayout.Button("Create path")) layoutPath.GenerateFromWaypoints();
+        if (GUILayout.Button("Export path")) layoutPath.ExportFromWaypoints();
 
         GUILayout.Space(10);
-        GUI.backgroundColor = new Color32(115, 242, 252, 255);
-        if (GUILayout.Button("Update Length")) layoutPath.calcLength();
+        GUI.backgroundColor = new Color32(248, 200, 81, 255);
+        GUILayout.Label("Import from Moose Procedural Rally stages", EditorStyles.boldLabel);
+        if (GUILayout.Button("Import road_data.bin"))
+        {
+            var path = EditorUtility.OpenFilePanel("Select the road_data.bin file", "", "bin");
+            if (path.Length != 0)
+            {
+                if (layoutPath.ImportMooseBin(path))
+                {
+                    EditorUtility.DisplayDialog("Moose Import", "Path imported!", "Ok!!");
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Moose Import", "ERROR!, no points added\r\nCheck the file!", "Ok!!");
+                }
+            }
+        }
 
         GUILayout.Space(10);
         GUILayout.Label("Utility", EditorStyles.boldLabel);
+        GUI.backgroundColor = new Color32(115, 242, 252, 255);
+        if (GUILayout.Button("Update Length")) layoutPath.calcLength();
         /* ??
         GUI.backgroundColor = Color.white;
         //GUILayout.Label("Import from Max spline generated", EditorStyles.boldLabel);

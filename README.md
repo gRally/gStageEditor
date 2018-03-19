@@ -1,3 +1,8 @@
+### v1.6.0 - 2018/03/19
+- Export path;
+- Import path from Moose procedural stages;
+- New signals;
+
 ### v1.5.0 - 2018/01/22
 - New layout path manager, better way to edit the path;
 
