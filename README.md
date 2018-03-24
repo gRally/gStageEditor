@@ -1,3 +1,6 @@
+### v1.6.1 - 2018/03/24
+- Puddles enabled/disabled
+
 ### v1.6.0 - 2018/03/19
 - Export path;
 - Import path from Moose procedural stages;
