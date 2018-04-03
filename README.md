@@ -1,3 +1,6 @@
+### V1.7.0 - 2018/04/03
+- Added semaphore lights system;
+
 ### v1.6.1 - 2018/03/24
 - Puddles enabled/disabled
 
