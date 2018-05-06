@@ -374,6 +374,7 @@ public class LayoutPath : MonoBehaviour
     {
         points.Clear();
         var b = new BinaryReader(File.Open(fileName, FileMode.Open));
+        var version = b.ReadUInt32();
         var numPoints = b.ReadUInt32();
         for (var i = 0; i < numPoints; i++)
         {

@@ -251,9 +251,9 @@ public class LayoutPathEditor : Editor
         GUILayout.Space(10);
         GUI.backgroundColor = new Color32(248, 200, 81, 255);
         GUILayout.Label("Import from Moose Procedural Rally stages", EditorStyles.boldLabel);
-        if (GUILayout.Button("Import road_data.bin"))
+        if (GUILayout.Button("Import spline.rsd"))
         {
-            var path = EditorUtility.OpenFilePanel("Select the road_data.bin file", "", "bin");
+            var path = EditorUtility.OpenFilePanel("Select the spline.rsd file", "", "rsd");
             if (path.Length != 0)
             {
                 if (layoutPath.ImportMooseBin(path))

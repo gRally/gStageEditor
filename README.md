@@ -1,3 +1,7 @@
+### V1.8.0 - 2018/05/06
+- Moose import path;
+- Shader update;
+
 ### V1.7.0 - 2018/04/03
 - Added semaphore lights system;
 
