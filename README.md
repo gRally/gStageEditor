@@ -1,3 +1,7 @@
+### V1.8.1 - 2018/05/06
+- Renamed `Temp` scene for the temporary main scene;
+- Fix old vertexpaint issue;
+
 ### V1.8.0 - 2018/05/06
 - Moose import path;
 - Shader update;

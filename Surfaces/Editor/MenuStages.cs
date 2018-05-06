@@ -38,7 +38,7 @@ public class MenuStages
         Debug.Log(string.Format("Stage data in {0} is created successfully.", assetPath));
     }
 
-    [MenuItem("gRally/3. Create main, stage and layout0 scenes", false, 3)]
+    [MenuItem("gRally/3. Create temp, stage and layout0 scenes", false, 3)]
     public static void CreateMainScene()
     {
         if (!Directory.Exists("Assets/Scenes"))
@@ -46,10 +46,10 @@ public class MenuStages
             Directory.CreateDirectory("Assets/Scenes");
         }
 
-        if (!File.Exists("Assets/Scenes/main.unity"))
+        if (!File.Exists("Assets/Scenes/temp.unity"))
         {
             var main = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
-            EditorSceneManager.SaveScene(main, "Assets/Scenes/main.unity");
+            EditorSceneManager.SaveScene(main, "Assets/Scenes/temp.unity");
             EditorSceneManager.SetActiveScene(main);
 
             var path = "Assets/gStageEditor/Resources/CarSimulator.prefab";
@@ -106,7 +106,7 @@ public class MenuStages
             EditorSceneManager.MarkAllScenesDirty();
         }
 
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName("main"));
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName("temp"));
     }
 
     [MenuItem("gRally/4. Create new layout", false, 4)]

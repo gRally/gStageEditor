@@ -48,12 +48,13 @@ public class ExportStages
             EditorUtility.SetDirty(stage);
             AssetDatabase.SaveAssets();
 
+            /* TODO: removed, no VertexPainter attached
             // 3: apply vertex data
             foreach (var item in Object.FindObjectsOfType<JBooth.VertexPainterPro.VertexInstanceStream>())
             {
                 item.Apply();
             }
-
+            */
             // 4: store xml data
             // write data stages
             gUtility.CXml stageXml = new gUtility.CXml(path + @"/stage.xml", true);
