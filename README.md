@@ -1,3 +1,7 @@
+### V1.8.2 - 2018/05/06
+- Removed unused shaders;
+- Added blend shader;
+
 ### V1.8.1 - 2018/05/06
 - Renamed `Temp` scene for the temporary main scene;
 - Fix old vertexpaint issue;
