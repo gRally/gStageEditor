@@ -1,3 +1,6 @@
+### V1.9.0 - 2018/05/09
+- Finish banner moved from the finish line;
+
 ### V1.8.2 - 2018/05/06
 - Removed unused shaders;
 - Added blend shader;

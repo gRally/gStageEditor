@@ -216,7 +216,7 @@ public class StartFinish : MonoBehaviour
         createSign("SIGN_END_01", pos - (dot * SignalDistanceFromCenter), p0, p1);
         
         // banner finish
-        layout.GetPositionOnPath(FinishDistance);
+        layout.GetPositionOnPath(FinishDistance + 15.0f);
         pos = layout.PosOnPath;
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
