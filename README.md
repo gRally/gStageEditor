@@ -1,3 +1,7 @@
+### V1.9.1 - 2018/06/08
+- Fixed issue during the simulation for the cameras, that search the wrong scene;
+- Improved default bump values on phys materials;
+
 ### V1.9.0 - 2018/05/09
 - Finish banner moved from the finish line;
 

@@ -438,7 +438,7 @@ public class MenuStages
         newItem.UsableGrip = 1.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 20.0f;
-        newItem.Bump = new Vector2(0.0f, 10.0f);
+        newItem.Bump = new Vector2(0.10f, 5.0f);
         newItem.TrailColor = new Color32(30, 66, 30, 165);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -468,7 +468,7 @@ public class MenuStages
         newItem.UsableGrip = 0.5f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 20.0f;
-        newItem.Bump = new Vector2(0.0f, 10.0f);
+        newItem.Bump = new Vector2(0.10f, 5.0f);
         newItem.TrailColor = new Color32(30, 66, 30, 165);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -498,7 +498,7 @@ public class MenuStages
         newItem.UsableGrip = 0.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 20.0f;
-        newItem.Bump = new Vector2(0.0f, 10.0f);
+        newItem.Bump = new Vector2(0.10f, 5.0f);
         newItem.TrailColor = new Color32(30, 66, 30, 165);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -615,7 +615,7 @@ public class MenuStages
         // ice
         newItem = new Surface();
         newItem.Type = Surface.SURFACE_TYPE.ICE;
-        newItem.PhysColor = new Color32(023, 095, 103, 255);
+        newItem.PhysColor = new Color32(200, 229, 232, 255);
         newItem.Name = "Ice max grip";
         newItem.UsableGrip = 1.0f;
         newItem.Rolling = 1.0f;
@@ -645,7 +645,7 @@ public class MenuStages
 
         newItem = new Surface();
         newItem.Type = Surface.SURFACE_TYPE.ICE;
-        newItem.PhysColor = new Color32(071, 143, 151, 255);
+        newItem.PhysColor = new Color32(214, 235, 238, 255);
         newItem.Name = "Ice med grip";
         newItem.UsableGrip = 0.5f;
         newItem.Rolling = 1.0f;
@@ -675,7 +675,7 @@ public class MenuStages
 
         newItem = new Surface();
         newItem.Type = Surface.SURFACE_TYPE.ICE;
-        newItem.PhysColor = new Color32(119, 191, 199, 255);
+        newItem.PhysColor = new Color32(227, 242, 243, 255);
         newItem.Name = "Ice min grip";
         newItem.UsableGrip = 0.0f;
         newItem.Rolling = 1.0f;

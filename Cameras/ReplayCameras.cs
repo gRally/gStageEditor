@@ -223,7 +223,19 @@ public class ReplayCameras : MonoBehaviour
 
     public void StartSimulation()
     {
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName("main"));
+        var scene = SceneManager.GetSceneByName("temp");
+        if (!scene.IsValid())
+        {
+            scene = SceneManager.GetSceneByName("main");
+        }
+
+        if (!scene.IsValid())
+        {
+            Debug.LogError("No temp or main scene found");
+            return;
+        }
+
+        SceneManager.SetActiveScene(scene);
         OnSimulation = !OnSimulation;
         foreach (var cam in Camera.allCameras)
         {
