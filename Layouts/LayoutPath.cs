@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class LayoutPath : MonoBehaviour
 {
@@ -387,5 +388,92 @@ public class LayoutPath : MonoBehaviour
 
         return points.Count > 0;
     }
+
+#if VEGETATION_STUDIO
+    [HideInInspector]
+    public bool VS_RemoveGrass = true;
+    [HideInInspector]
+    public bool VS_RemovePlants = true;
+    [HideInInspector]
+    public bool VS_RemoveTrees = true;
+    [HideInInspector]
+    public bool VS_RemoveObjects = true;
+    [HideInInspector]
+    public bool VS_RemoveLargeObjects = true;
+    [HideInInspector]
+    public float VS_AdditionalGrassPerimiter = 0;
+    [HideInInspector]
+    public float VS_AdditionalPlantPerimiter = 0;
+    [HideInInspector]
+    public float VS_AdditionalTreePerimiter = 0;
+    [HideInInspector]
+    public float VS_AdditionalObjectPerimiter = 0;
+    [HideInInspector]
+    public float VS_AdditionalLargeObjectPerimiter = 0;
+    [HideInInspector]
+    public float VS_AdditionalGrassPerimiterMax = 0;
+    [HideInInspector]
+    public float VS_AdditionalPlantPerimiterMax = 0;
+    [HideInInspector]
+    public float VS_AdditionalTreePerimiterMax = 0;
+    [HideInInspector]
+    public float VS_AdditionalObjectPerimiterMax = 0;
+    [HideInInspector]
+    public float VS_AdditionalLargeObjectPerimiterMax = 0;
+    [HideInInspector]
+    public float VS_LineWidth = 5;
+    [HideInInspector]
+    public int VS_SkipPoints = 1;
+
+    public bool GenerateVsRoadMask()
+    {
+        var name = string.Format("gRally_{0}_mask", transform.gameObject.scene.name);
+
+        var scene = SceneManager.GetSceneByName("stage");
+
+        var goDel = GameObject.Find(name);
+        if (goDel != null)
+        {
+            DestroyImmediate(goDel);
+        }
+
+        var go = new GameObject(name);
+        SceneManager.MoveGameObjectToScene(go, scene);
+
+        var vml = go.AddComponent<AwesomeTechnologies.VegetationMaskLine>();
+        vml.MaskName = string.Format("gRally {0} mask", transform.gameObject.scene.name);
+        vml.RemoveGrass = VS_RemoveGrass;
+        vml.RemovePlants = VS_RemovePlants;
+        vml.RemoveTrees = VS_RemoveTrees;
+        vml.RemoveObjects = VS_RemoveObjects;
+        vml.RemoveLargeObjects = VS_RemoveLargeObjects;
+        vml.AdditionalGrassPerimiter = VS_AdditionalGrassPerimiter;
+        vml.AdditionalPlantPerimiter = VS_AdditionalPlantPerimiter;
+        vml.AdditionalTreePerimiter = VS_AdditionalTreePerimiter;
+        vml.AdditionalObjectPerimiter = VS_AdditionalObjectPerimiter;
+        vml.AdditionalLargeObjectPerimiter = VS_AdditionalLargeObjectPerimiter;
+        vml.AdditionalGrassPerimiterMax = VS_AdditionalGrassPerimiterMax;
+        vml.AdditionalPlantPerimiterMax = VS_AdditionalPlantPerimiterMax;
+        vml.AdditionalTreePerimiterMax = VS_AdditionalTreePerimiterMax;
+        vml.AdditionalObjectPerimiterMax = VS_AdditionalObjectPerimiterMax;
+        vml.AdditionalLargeObjectPerimiterMax = VS_AdditionalLargeObjectPerimiterMax;
+        vml.LineWidth = VS_LineWidth;
+        vml.ClearNodes();
+
+        var toSkip = 0;
+        for (int i = 0; i < points.Count; i ++)
+        {
+            if (toSkip >= VS_SkipPoints)
+            {
+                vml.AddNode(points[i]);
+                toSkip = 0;
+            }
+            toSkip++;
+        }
+        vml.UpdateVegetationMask();
+        return true;
+    }
+
+#endif
 
 }

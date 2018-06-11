@@ -1,3 +1,6 @@
+### V1.10.0 - 2018/06/11
+- Integration with [Vegetation Studio](https://www.awesometech.no) to create the mask line from the layout path;
+
 ### V1.9.1 - 2018/06/08
 - Fixed issue during the simulation for the cameras, that search the wrong scene;
 - Improved default bump values on phys materials;

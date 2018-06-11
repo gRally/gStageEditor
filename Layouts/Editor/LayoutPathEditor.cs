@@ -249,8 +249,8 @@ public class LayoutPathEditor : Editor
         if (GUILayout.Button("Export path")) layoutPath.ExportFromWaypoints();
 
         GUILayout.Space(10);
-        GUI.backgroundColor = new Color32(248, 200, 81, 255);
         GUILayout.Label("Import from Moose Procedural Rally stages", EditorStyles.boldLabel);
+        GUI.backgroundColor = new Color32(248, 200, 81, 255);
         if (GUILayout.Button("Import spline.rsd"))
         {
             var path = EditorUtility.OpenFilePanel("Select the spline.rsd file", "", "rsd");
@@ -266,6 +266,43 @@ public class LayoutPathEditor : Editor
                 }
             }
         }
+
+#if VEGETATION_STUDIO
+        GUILayout.Space(10);
+        GUI.backgroundColor = Color.white;
+        GUILayout.Label("Vegetation Studio road mask creation", EditorStyles.boldLabel);
+
+        layoutPath.VS_RemoveGrass = EditorGUILayout.Toggle("Remove Grass", layoutPath.VS_RemoveGrass);
+        layoutPath.VS_RemovePlants = EditorGUILayout.Toggle("Remove Plants", layoutPath.VS_RemovePlants);
+        layoutPath.VS_RemoveTrees = EditorGUILayout.Toggle("Remove Trees", layoutPath.VS_RemoveTrees);
+        layoutPath.VS_RemoveObjects = EditorGUILayout.Toggle("Remove Objects", layoutPath.VS_RemoveObjects);
+        layoutPath.VS_RemoveLargeObjects = EditorGUILayout.Toggle("Remove Large Objects", layoutPath.VS_RemoveLargeObjects);
+
+        AwesomeTechnologies.Common.EditorFunctions.FloatRangeField("Additional Grass Perimeter", ref layoutPath.VS_AdditionalGrassPerimiter, ref layoutPath.VS_AdditionalGrassPerimiterMax, 0, 40);
+        AwesomeTechnologies.Common.EditorFunctions.FloatRangeField("Additional Plant Perimeter", ref layoutPath.VS_AdditionalPlantPerimiter, ref layoutPath.VS_AdditionalPlantPerimiterMax, 0, 40);
+        AwesomeTechnologies.Common.EditorFunctions.FloatRangeField("Additional Tree Perimeter", ref layoutPath.VS_AdditionalTreePerimiter, ref layoutPath.VS_AdditionalTreePerimiterMax, 0, 40);
+        AwesomeTechnologies.Common.EditorFunctions.FloatRangeField("Additional Object Perimeter", ref layoutPath.VS_AdditionalObjectPerimiter, ref layoutPath.VS_AdditionalObjectPerimiterMax, 0, 40);
+        AwesomeTechnologies.Common.EditorFunctions.FloatRangeField("Additional Large Perimeter", ref layoutPath.VS_AdditionalLargeObjectPerimiter, ref layoutPath.VS_AdditionalLargeObjectPerimiterMax, 0, 40);
+        layoutPath.VS_LineWidth = EditorGUILayout.FloatField("Line Width", layoutPath.VS_LineWidth);
+
+        GUILayout.Space(5);
+        layoutPath.VS_SkipPoints = EditorGUILayout.IntField("Skip points", layoutPath.VS_SkipPoints);
+        GUILayout.Space(5);
+
+        GUI.backgroundColor = new Color32(99, 194, 214, 255);
+        if (GUILayout.Button("Create"))
+        {
+            if (layoutPath.GenerateVsRoadMask())
+            {
+                EditorUtility.DisplayDialog("Vegetation Studio", "Road mask created!", "Ok!!");
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Vegetation Studio", "ERROR!, no road mask created!", "Ok!!");
+            }
+        }
+
+#endif
 
         GUILayout.Space(10);
         GUILayout.Label("Utility", EditorStyles.boldLabel);
@@ -303,5 +340,7 @@ public class LayoutPathEditor : Editor
         {
             layoutPath.Clear();
         }
+
+        GUI.backgroundColor = Color.white;
     }
 }
