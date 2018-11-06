@@ -9,17 +9,24 @@ using System.Globalization;
 using UnityEditor.SceneManagement;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
+using System.IO.Compression;
 
 public class ExportStages
 {
     static string assetPath = "Assets/Stage.data.asset";
+    static Dictionary<string, int> PhysMatNames;
+    static Dictionary<string, float> PhysMatDisplacement;
+
     [MenuItem("gRally/Export Stage", false, 99)]
     static void ExportStage()
     {
-        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.StandaloneWindows);
+        PhysMatNames = null;
+        PhysMatDisplacement = null;
+
+        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
 
         StageData stage = (StageData)AssetDatabase.LoadAssetAtPath(assetPath, typeof(StageData));
-    
+
         string path = EditorUtility.OpenFolderPanel("Save Stage", stage.exportPath, "");
 
         if (!string.IsNullOrEmpty(path))
@@ -38,8 +45,9 @@ public class ExportStages
                 var fileName = Path.GetFileName(item).ToLower();
                 if (fileName.EndsWith(".manifest") ||
                     fileName == "stage.grpack" ||
-                    fileName.StartsWith("layout") ||
-                    fileName == Path.GetFileName(path).ToLower())
+                    (fileName.StartsWith("layout") && fileName.EndsWith(".grpack"))||
+                    fileName == Path.GetFileName(path).ToLower() ||
+                    fileName == "stage.xml")
                 {
                     File.Delete(item);
                 }
@@ -65,6 +73,15 @@ public class ExportStages
             writeMaterialSettings(ref stageXml, ref stage);
 
             stageXml.Commit();
+
+            // dump collision
+            if (PhysMatNames != null)
+            {
+                CreateCollision(path);
+            }
+
+            AssetDatabase.SaveAssets();
+
             // 5: rollback the textures edited:
             // not at the moment... rollbackEditTextures();
             // 6: build stage!
@@ -157,7 +174,7 @@ public class ExportStages
                     if (path != null)
                     {
                         string pointExport = "";
-                        for (int pt = 0; pt < path.GetPointsCount(); pt+=eachPoint)
+                        for (int pt = 0; pt < path.GetPointsCount(); pt += eachPoint)
                         {
                             var point = path.GetPoint(pt);
                             pointExport += string.Format("{0} {1} {2} ", point.x, point.y, point.z);
@@ -175,6 +192,8 @@ public class ExportStages
     {
         int idMat = 0;
         matExported = new List<string>();
+        PhysMatNames = new Dictionary<string, int>();
+        PhysMatDisplacement = new Dictionary<string, float>();
         var renderers = (Renderer[])Resources.FindObjectsOfTypeAll(typeof(Renderer));
         foreach (Renderer renderer in renderers)
         {
@@ -195,6 +214,12 @@ public class ExportStages
                             tex = mat.GetTexture("_PhysMap");
                             texWet = mat.GetTexture("_MainTex");
                             xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteFloat("maxDisplacement", 0.0f);
+
+                            if (!PhysMatNames.ContainsKey(mat.name))
+                            {
+                                PhysMatNames.Add(mat.name, idMat);
+                                PhysMatDisplacement.Add(mat.name, 0.0f);
+                            }
                         }
                         else if (mat.shader.name.EndsWith("2"))
                         {
@@ -204,6 +229,12 @@ public class ExportStages
                             texPuddles = mat.GetTexture("_PuddlesTexture");
                             puddlesSize = mat.GetFloat("_PuddlesSize");
                             xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteFloat("maxDisplacement", mat.GetFloat("_MaxDisplacementmeters"));
+
+                            if (!PhysMatNames.ContainsKey(mat.name))
+                            {
+                                PhysMatNames.Add(mat.name, idMat);
+                                PhysMatDisplacement.Add(mat.name, mat.GetFloat("_MaxDisplacementmeters"));
+                            }
                         }
                         if (tex != null)
                         {
@@ -213,7 +244,7 @@ public class ExportStages
                                 getWetData(idMat, texWet as Texture2D, 16, mat.name, ref xml);
                                 if (texPuddles != null)
                                 {
-                                     getPuddlesData(idMat, texPuddles as Texture2D, 32, mat.name, puddlesSize, ref xml);
+                                    getPuddlesData(idMat, texPuddles as Texture2D, 32, mat.name, puddlesSize, ref xml);
                                 }
                                 idMat++;
                                 matExported.Add(mat.name);
@@ -272,9 +303,16 @@ public class ExportStages
             Directory.CreateDirectory("Assets/PhysTextures");
         }
 
-        if (File.Exists(texName))
+        try
         {
-            File.Delete(texName);
+            if (File.Exists(texName))
+            {
+                File.Delete(texName);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning(ex.ToString());
         }
         byte[] bytes = debugTex.EncodeToPNG();
         File.WriteAllBytes(texName, bytes);
@@ -560,6 +598,219 @@ public class ExportStages
         }
     }
 
+    /// <summary>
+    /// create baked collision
+    /// </summary>
+    /// <param name="exportPath"></param>
+    /// <param name="maxLayouts"></param>
+    static void CreateCollision(string exportPath, int maxLayouts = 50)
+    {
+        int layerIndex = LayerMask.NameToLayer("COLLISION");
+
+        // main scene
+        bool createMain = true;
+        if (File.Exists(exportPath + @"\stage.col"))
+        {
+            createMain = EditorUtility.DisplayDialog("Collision exists", "a stage collision exists: regenerate?", "Yes", "No");
+        }
+        if (createMain)
+        {
+            var colMain = CreateSceneCollision(SceneManager.GetSceneByName("stage"));
+            SaveCollision(colMain, exportPath + @"\stage.col");
+        }
+
+        // layouts
+        for (int i = 0; i < maxLayouts; i++)
+        {
+            var scene = SceneManager.GetSceneByName("layout" + i.ToString());
+            if (scene.name == null)
+            {
+                break;
+            }
+
+            bool createLayout = true;
+            if (File.Exists(exportPath + string.Format(@"\layout{0}.col", i)))
+            {
+                createLayout = EditorUtility.DisplayDialog("Collision exists", string.Format("a layout {0} collision exists: regenerate?", i), "Yes", "No");
+            }
+            if (createLayout)
+            {
+                var colLayout = CreateSceneCollision(scene);
+                SaveCollision(colLayout, exportPath + string.Format(@"\layout{0}.col", i));
+            }
+        }
+    }
+
+    /// <summary>
+    /// save the collision to a file
+    /// </summary>
+    /// <param name="collision"></param>
+    /// <param name="fileName"></param>
+    static void SaveCollision(List<CollTriangle> collision, string fileName)
+    {
+        if (collision.Count > 0)
+        {
+            var byteStream = new List<byte>();
+            foreach (var item in collision)
+            {
+                byteStream.AddRange(item.Bytes());
+            }
+            
+            var data = byteStream.ToArray();
+            MemoryStream output = new MemoryStream();
+            using (DeflateStream dstream = new DeflateStream(output, CompressionMode.Compress))
+            {
+                dstream.Write(data, 0, data.Length);
+            }
+            
+            File.WriteAllBytes(fileName, output.ToArray());
+        }
+    }
+
+    /// <summary>
+    /// create the collision from a scene
+    /// </summary>
+    /// <param name="scene"></param>
+    /// <returns></returns>
+    static List<CollTriangle> CreateSceneCollision(Scene scene)
+    {
+        var collision = new List<CollTriangle>();
+        int layerIndex = LayerMask.NameToLayer("COLLISION");
+        var C = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+
+        foreach (var item in scene.GetRootGameObjects())
+        {
+            var cols = item.GetComponentsInChildren<MeshFilter>();
+            foreach (var col in cols)
+            {
+                if (col == null)
+                {
+                    continue;
+                }
+                if (col.gameObject.layer == layerIndex)
+                {
+                    if (Debug.isDebugBuild)
+                    {
+                        Debug.Log("parsing: " + col.name);
+                    }
+                    /*
+                    MeshFilter filter = col.GetComponent<MeshFilter>();
+
+                    if (filter == null)
+                    {
+                        continue;
+                    }
+                    */
+                    col.gameObject.isStatic = false;
+                    Renderer rend = col.GetComponent<Renderer>();
+                    var matrix = col.transform.localToWorldMatrix;
+                    Mesh mesh = col.sharedMesh;
+
+                    try
+                    {
+                        Vector3[] vert = mesh.vertices;
+                        Vector3[] norm = mesh.normals;
+                        Vector2[] uv = mesh.uv;
+                        Color[] colors = mesh.colors;
+
+                        if (mesh.vertices.Length == 0)
+                        {
+                            Debug.LogWarning("Empty mesh: " + col.name);
+                            continue;
+                        }
+
+                        if (uv.Length < mesh.vertices.Length)
+                        {
+                            uv = new Vector2[mesh.vertices.Length];
+                        }
+
+                        for (int i = 0; i < mesh.subMeshCount; i++)
+                        {
+                            int[] triangles = mesh.GetTriangles(i);
+                            if (triangles.Length == 0)
+                            {
+                                continue;
+                            }
+
+                            int matID = 0;
+                            float disp = 0.0f;
+
+                            if (rend.sharedMaterials.Length > matID)
+                            {
+                                PhysMatNames.TryGetValue(rend.sharedMaterials[i].name, out matID);
+                                PhysMatDisplacement.TryGetValue(rend.sharedMaterials[i].name, out disp);
+                                // #todo disp = sim.GetMaxDisplacement(rend.sharedMaterials[i].name) * GRConfig.Instance.Usage;
+                            }
+
+                            for (int t = 0; t < triangles.Length; t += 3)
+                            {
+                                Vector3 p1 = vert[triangles[t + 0]];
+                                Vector3 p2 = vert[triangles[t + 1]];
+                                Vector3 p3 = vert[triangles[t + 2]];
+
+                                p1 = matrix.MultiplyPoint(p1);
+                                p2 = matrix.MultiplyPoint(p2);
+                                p3 = matrix.MultiplyPoint(p3);
+
+                                Vector3 n1 = norm[triangles[t + 0]];
+                                Vector3 n2 = norm[triangles[t + 1]];
+                                Vector3 n3 = norm[triangles[t + 2]];
+
+                                n1 = matrix * n1;
+                                n2 = matrix * n2;
+                                n3 = matrix * n3;
+
+                                Vector2 uv1 = uv[triangles[t + 0]];
+                                Vector2 uv2 = uv[triangles[t + 1]];
+                                Vector2 uv3 = uv[triangles[t + 2]];
+
+                                var c1 = C;
+                                var c2 = C;
+                                var c3 = C;
+                                if (colors != null && colors.Length > 0)
+                                {
+                                    c1 = colors[triangles[t + 0]];
+                                    c2 = colors[triangles[t + 1]];
+                                    c3 = colors[triangles[t + 2]];
+                                }
+                                //p1.y = p1.y + disp * c1.b;
+                                //p2.y = p2.y + disp * c2.b;
+                                //p3.y = p3.y + disp * c3.b;
+
+                                collision.Add(new CollTriangle()
+                                {
+                                    P1 = p1,
+                                    P2 = p2,
+                                    P3 = p3,
+                                    N1 = n1,
+                                    N2 = n2,
+                                    N3 = n3,
+                                    UV1 = uv1,
+                                    UV2 = uv2,
+                                    UV3 = uv3,
+                                    C1 = c1,
+                                    C2 = c2,
+                                    C3 = c3,
+                                    MAT = matID
+                                });
+
+                            }
+                        }
+                        //Destroy(col.gameObject);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError(ex.ToString());
+                    }
+                    col.gameObject.isStatic = true;
+                }
+            }
+        }
+
+        return collision;
+    }
+
+    // utility
     static bool equal(Color32 c1, Color32 c2, int diff = 2)
     {
         var diffR = Mathf.Abs(c1.r - c2.r);
@@ -615,5 +866,90 @@ public class ExportStages
         ret = ret.Remove(ret.Length - 1);
         ret += string.Format("|{0}", Convert.ToInt32(color.mode));
         return ret;
+    }
+}
+
+public struct CollTriangle
+{
+    public Vector3 P1;
+    public Vector3 P2;
+    public Vector3 P3;
+
+    public Vector3 N1;
+    public Vector3 N2;
+    public Vector3 N3;
+
+    public Vector2 UV1;
+    public Vector3 UV2;
+    public Vector3 UV3;
+
+    public Color C1;
+    public Color C2;
+    public Color C3;
+
+    public int MAT;
+
+    public int NumBytes()
+    {
+        var bytes = (3 * 3) + (3 * 3) + (2 * 3) + (4 * 3) + 1;
+        return bytes;
+    }
+
+    public byte[] Bytes()
+    {
+        var byteStream = new List<byte>();
+
+        // byteStream.AddRange(BitConverter.GetBytes(NumBytes()));
+        byteStream.AddRange(BitConverter.GetBytes(P1.x));
+        byteStream.AddRange(BitConverter.GetBytes(P1.z));
+        byteStream.AddRange(BitConverter.GetBytes(P1.y));
+
+        byteStream.AddRange(BitConverter.GetBytes(P2.x));
+        byteStream.AddRange(BitConverter.GetBytes(P2.z));
+        byteStream.AddRange(BitConverter.GetBytes(P2.y));
+
+        byteStream.AddRange(BitConverter.GetBytes(P3.x));
+        byteStream.AddRange(BitConverter.GetBytes(P3.z));
+        byteStream.AddRange(BitConverter.GetBytes(P3.y));
+
+        byteStream.AddRange(BitConverter.GetBytes(N1.x));
+        byteStream.AddRange(BitConverter.GetBytes(N1.z));
+        byteStream.AddRange(BitConverter.GetBytes(N1.y));
+
+        byteStream.AddRange(BitConverter.GetBytes(N2.x));
+        byteStream.AddRange(BitConverter.GetBytes(N2.z));
+        byteStream.AddRange(BitConverter.GetBytes(N2.y));
+
+        byteStream.AddRange(BitConverter.GetBytes(N3.x));
+        byteStream.AddRange(BitConverter.GetBytes(N3.z));
+        byteStream.AddRange(BitConverter.GetBytes(N3.y));
+
+        byteStream.AddRange(BitConverter.GetBytes(UV1.x));
+        byteStream.AddRange(BitConverter.GetBytes(UV1.y));
+
+        byteStream.AddRange(BitConverter.GetBytes(UV2.x));
+        byteStream.AddRange(BitConverter.GetBytes(UV2.y));
+
+        byteStream.AddRange(BitConverter.GetBytes(UV3.x));
+        byteStream.AddRange(BitConverter.GetBytes(UV3.y));
+
+        byteStream.AddRange(BitConverter.GetBytes(C1.r));
+        byteStream.AddRange(BitConverter.GetBytes(C1.g));
+        byteStream.AddRange(BitConverter.GetBytes(C1.b));
+        byteStream.AddRange(BitConverter.GetBytes(C1.a));
+
+        byteStream.AddRange(BitConverter.GetBytes(C2.r));
+        byteStream.AddRange(BitConverter.GetBytes(C2.g));
+        byteStream.AddRange(BitConverter.GetBytes(C2.b));
+        byteStream.AddRange(BitConverter.GetBytes(C2.a));
+
+        byteStream.AddRange(BitConverter.GetBytes(C3.r));
+        byteStream.AddRange(BitConverter.GetBytes(C3.g));
+        byteStream.AddRange(BitConverter.GetBytes(C3.b));
+        byteStream.AddRange(BitConverter.GetBytes(C3.a));
+
+        byteStream.AddRange(BitConverter.GetBytes(MAT));
+
+        return byteStream.ToArray();
     }
 }
