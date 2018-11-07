@@ -802,7 +802,7 @@ public class ExportStages
                     {
                         Debug.LogError(ex.ToString());
                     }
-                    // #todo col.gameObject.isStatic = true;
+                    col.gameObject.isStatic = true;
                 }
             }
         }
