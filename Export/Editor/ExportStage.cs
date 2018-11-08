@@ -701,6 +701,7 @@ public class ExportStages
                         continue;
                     }
                     */
+                    var fStatic = col.gameObject.isStatic;
                     col.gameObject.isStatic = false;
                     Renderer rend = col.GetComponent<Renderer>();
                     var matrix = col.transform.localToWorldMatrix;
@@ -802,7 +803,7 @@ public class ExportStages
                     {
                         Debug.LogError(ex.ToString());
                     }
-                    col.gameObject.isStatic = true;
+                    col.gameObject.isStatic = fStatic;
                 }
             }
         }
