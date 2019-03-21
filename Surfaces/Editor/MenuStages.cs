@@ -165,7 +165,13 @@ public class MenuStages
         newItem.UsableGrip = 1.0f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.0f;
-        newItem.Bump = new Vector2(0.0f, 2.0f);
+
+        newItem.Octaves = 7;
+        newItem.Persistance = 0.6f;
+        newItem.Lacunarity = 2.6f;
+        newItem.Scale = 1.0f;
+        newItem.ScaleBump = 300.0f;
+
         newItem.TrailColor = new Color32(125, 125, 125, 255);
         newItem.TrailBump = -1.0f;
         newItem.Gravity = -0.02f;
@@ -195,7 +201,13 @@ public class MenuStages
         newItem.UsableGrip = 0.5f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.0f;
-        newItem.Bump = new Vector2(0.0f, 2.0f);
+
+        newItem.Octaves = 7;
+        newItem.Persistance = 0.6f;
+        newItem.Lacunarity = 2.6f;
+        newItem.Scale = 1.0f;
+        newItem.ScaleBump = 400.0f;
+
         newItem.TrailColor = new Color32(125, 125, 125, 255);
         newItem.TrailBump = -1.0f;
         newItem.Gravity = -0.02f;
@@ -225,7 +237,13 @@ public class MenuStages
         newItem.UsableGrip = 0.0f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.0f;
-        newItem.Bump = new Vector2(0.0f, 2.0f);
+
+        newItem.Octaves = 7;
+        newItem.Persistance = 0.6f;
+        newItem.Lacunarity = 2.6f;
+        newItem.Scale = 1.0f;
+        newItem.ScaleBump = 500.0f;
+
         newItem.TrailColor = new Color32(125, 125, 125, 255);
         newItem.TrailBump = -1.0f;
         newItem.Gravity = -0.02f;
@@ -256,7 +274,13 @@ public class MenuStages
         newItem.UsableGrip = 1.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
-        newItem.Bump = new Vector2(0.0f, 10.0f);
+
+        newItem.Octaves = 4;
+        newItem.Persistance = 0.5f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.0f;
+        newItem.ScaleBump = 600.0f;
+
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -1.0f;
         newItem.Gravity = 0.0f;
@@ -286,7 +310,13 @@ public class MenuStages
         newItem.UsableGrip = 0.5f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
-        newItem.Bump = new Vector2(0.0f, 10.0f);
+
+        newItem.Octaves = 4;
+        newItem.Persistance = 0.5f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.0f;
+        newItem.ScaleBump = 700.0f;
+
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -1.0f;
         newItem.Gravity = 0.0f;
@@ -316,7 +346,13 @@ public class MenuStages
         newItem.UsableGrip = 0.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
-        newItem.Bump = new Vector2(0.0f, 10.0f);
+
+        newItem.Octaves = 4;
+        newItem.Persistance = 0.5f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.0f;
+        newItem.ScaleBump = 800.0f;
+
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -1.0f;
         newItem.Gravity = 0.0f;
@@ -347,7 +383,13 @@ public class MenuStages
         newItem.UsableGrip = 1.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.5f;
-        newItem.Bump = new Vector2(0.0f, 12.0f);
+
+        newItem.Octaves = 4;
+        newItem.Persistance = 0.5f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.0f;
+        newItem.ScaleBump = 600.0f;
+
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -377,7 +419,13 @@ public class MenuStages
         newItem.UsableGrip = 0.5f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.5f;
-        newItem.Bump = new Vector2(0.0f, 12.0f);
+
+        newItem.Octaves = 4;
+        newItem.Persistance = 0.5f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.0f;
+        newItem.ScaleBump = 700.0f;
+
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -407,7 +455,13 @@ public class MenuStages
         newItem.UsableGrip = 0.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.5f;
-        newItem.Bump = new Vector2(0.0f, 12.0f);
+
+        newItem.Octaves = 4;
+        newItem.Persistance = 0.5f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.0f;
+        newItem.ScaleBump = 800.0f;
+
         newItem.TrailColor = new Color32(154, 105, 37, 159);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -438,7 +492,13 @@ public class MenuStages
         newItem.UsableGrip = 1.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 20.0f;
-        newItem.Bump = new Vector2(0.10f, 5.0f);
+
+        newItem.Octaves = 3;
+        newItem.Persistance = 0.65f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.5f;
+        newItem.ScaleBump = 600.0f;
+
         newItem.TrailColor = new Color32(30, 66, 30, 165);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -468,7 +528,13 @@ public class MenuStages
         newItem.UsableGrip = 0.5f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 20.0f;
-        newItem.Bump = new Vector2(0.10f, 5.0f);
+
+        newItem.Octaves = 3;
+        newItem.Persistance = 0.65f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.5f;
+        newItem.ScaleBump = 700.0f;
+
         newItem.TrailColor = new Color32(30, 66, 30, 165);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -498,7 +564,13 @@ public class MenuStages
         newItem.UsableGrip = 0.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 20.0f;
-        newItem.Bump = new Vector2(0.10f, 5.0f);
+
+        newItem.Octaves = 3;
+        newItem.Persistance = 0.65f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.5f;
+        newItem.ScaleBump = 800.0f;
+
         newItem.TrailColor = new Color32(30, 66, 30, 165);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -529,7 +601,13 @@ public class MenuStages
         newItem.UsableGrip = 1.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
-        newItem.Bump = new Vector2(0.0f, 10.0f);
+
+        newItem.Octaves = 3;
+        newItem.Persistance = 0.65f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.5f;
+        newItem.ScaleBump = 600.0f;
+
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -559,7 +637,13 @@ public class MenuStages
         newItem.UsableGrip = 0.5f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
-        newItem.Bump = new Vector2(0.0f, 10.0f);
+
+        newItem.Octaves = 3;
+        newItem.Persistance = 0.65f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.5f;
+        newItem.ScaleBump = 700.0f;
+
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -589,7 +673,13 @@ public class MenuStages
         newItem.UsableGrip = 0.0f;
         newItem.Rolling = 5.0f;
         newItem.Drag = 2.0f;
-        newItem.Bump = new Vector2(0.0f, 10.0f);
+
+        newItem.Octaves = 3;
+        newItem.Persistance = 0.65f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.5f;
+        newItem.ScaleBump = 800.0f;
+
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -2.0f;
         newItem.Gravity = 0.0f;
@@ -620,7 +710,13 @@ public class MenuStages
         newItem.UsableGrip = 1.0f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.2f;
-        newItem.Bump = new Vector2(0.0f, 4.0f);
+
+        newItem.Octaves = 3;
+        newItem.Persistance = 0.65f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.5f;
+        newItem.ScaleBump = 200.0f;
+
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -1.0f;
         newItem.Gravity = 0.0f;
@@ -650,7 +746,13 @@ public class MenuStages
         newItem.UsableGrip = 0.5f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.2f;
-        newItem.Bump = new Vector2(0.0f, 4.0f);
+
+        newItem.Octaves = 3;
+        newItem.Persistance = 0.65f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.5f;
+        newItem.ScaleBump = 300.0f;
+
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -1.0f;
         newItem.Gravity = 0.0f;
@@ -680,7 +782,13 @@ public class MenuStages
         newItem.UsableGrip = 0.0f;
         newItem.Rolling = 1.0f;
         newItem.Drag = 0.2f;
-        newItem.Bump = new Vector2(0.0f, 4.0f);
+
+        newItem.Octaves = 3;
+        newItem.Persistance = 0.65f;
+        newItem.Lacunarity = 1.45f;
+        newItem.Scale = 1.5f;
+        newItem.ScaleBump = 400.0f;
+
         newItem.TrailColor = new Color32(223, 223, 248, 255);
         newItem.TrailBump = -1.0f;
         newItem.Gravity = 0.0f;

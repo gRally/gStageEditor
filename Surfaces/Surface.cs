@@ -26,7 +26,12 @@ public class Surface
     public float UsableGrip;
     public float Rolling;
     public float Drag;
-    public Vector2 Bump;
+    public int Octaves;
+    // ff
+    public float Persistance;
+    public float Lacunarity;
+    public float ScaleBump;
+    public float Scale;
 
     [Header("Trails:")]
     public Color TrailColor;
