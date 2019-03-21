@@ -108,7 +108,11 @@ public class ExportStages
             xml.Settings[PHYS].WriteFloat("usableGrip", s.UsableGrip);
             xml.Settings[PHYS].WriteFloat("rolling", s.Rolling);
             xml.Settings[PHYS].WriteFloat("drag", s.Drag);
-            xml.Settings[PHYS].WriteVector2("bump", v2(s.Bump));
+            xml.Settings[PHYS].WriteInt("octaves", s.Octaves);
+            xml.Settings[PHYS].WriteFloat("persistance", s.Persistance);
+            xml.Settings[PHYS].WriteFloat("lacunarity", s.Lacunarity);
+            xml.Settings[PHYS].WriteFloat("scale", s.Scale);
+            xml.Settings[PHYS].WriteFloat("scaleBump", s.ScaleBump);
 
             var TRAILS = string.Format("SurfaceLibrary/Surface#{0}/Trails", i + 1);
             xml.Settings[TRAILS].WriteString("trailColor", c4(s.TrailColor));

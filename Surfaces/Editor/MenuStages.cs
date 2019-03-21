@@ -25,17 +25,30 @@ public class MenuStages
     [MenuItem("gRally/2. Create default stage data", false, 2)]
     public static void GenerateStageData()
     {
-        StageData asset = ScriptableObject.CreateInstance<StageData>();
-        AssetDatabase.CreateAsset(asset, assetPath);
-        asset.surfaceList = new List<Surface>();
-        asset.latitude = 44.4963904f;
-        asset.longitude = 7.5847333f;
-        asset.north = 78.0f;
-        init(ref asset);
+        var findAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<StageData>(assetPath);
+        if (findAsset != null)
+        {
+            // edit values
+            init(ref findAsset);
+            EditorUtility.SetDirty(findAsset);
+            AssetDatabase.SaveAssets();
+            Debug.Log(string.Format("Stage data in {0} is saved successfully.", assetPath));
+        }
+        else
+        {
+            // create new values
+            StageData asset = ScriptableObject.CreateInstance<StageData>();
+            AssetDatabase.CreateAsset(asset, assetPath);
+            asset.surfaceList = new List<Surface>();
+            asset.latitude = 44.4963904f;
+            asset.longitude = 7.5847333f;
+            asset.north = 78.0f;
+            init(ref asset);
 
-        EditorUtility.SetDirty(asset);
-        AssetDatabase.SaveAssets();
-        Debug.Log(string.Format("Stage data in {0} is created successfully.", assetPath));
+            EditorUtility.SetDirty(asset);
+            AssetDatabase.SaveAssets();
+            Debug.Log(string.Format("Stage data in {0} is created successfully.", assetPath));
+        }
     }
 
     [MenuItem("gRally/3. Create temp, stage and layout0 scenes", false, 3)]
