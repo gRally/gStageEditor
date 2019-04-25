@@ -40,7 +40,7 @@ public class StartFinish : MonoBehaviour
     [ShowOnly, Header("Data Calculated")]
     public float RealLength;
 
-	LayoutPath layout = null;
+	public LayoutPath layout = null;
     [Header("Signals")]
     public float SignalDistanceFromCenter = 2.5f;
     public float SignalDistanceFromBanner = 0.8f;
