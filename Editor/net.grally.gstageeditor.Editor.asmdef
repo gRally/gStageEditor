@@ -1,0 +1,16 @@
+{
+    "name": "net.grally.gstageeditor.Editor",
+    "references": [
+        "net.grally.gstageeditor.Runtime"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
