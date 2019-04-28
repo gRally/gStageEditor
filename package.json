@@ -1,0 +1,12 @@
+{
+    "name": "net.grally.gstageeditor",
+    "displayName": "gStageEditor",
+    "version": "1.0.1",
+    "unity": "2018.1",
+    "description": "create and export rally stages.",
+    "keywords": [
+        "grally",
+        "unity"
+    ],
+    "category": "grally"
+}
