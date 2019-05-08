@@ -279,23 +279,20 @@ public class StartFinish : MonoBehaviour
                 break;
             }
         }
-
     }
 
     private void createSign(string signName, Vector3 pos, Vector3 p0, Vector3 p1, float raise = 5.00f)
 	{
-#if UNITY_EDITOR
         pos.y = pos.y + raise;
-        string path = "Assets/gStageEditor/Resources/" + signName + ".prefab";
-        GameObject anchor_point = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
-        GameObject prefab_instance = Instantiate(anchor_point) as GameObject;
+        //string path = "Assets/gStageEditor/Resources/" + signName + ".prefab";
+        //GameObject anchor_point = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
+        GameObject prefab_instance = Instantiate(Resources.Load<GameObject>(signName));
         prefab_instance.transform.position = pos;
         prefab_instance.transform.rotation = Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0);
         prefab_instance.transform.SetParent(transform);
         prefab_instance.name = signName;
 
         ApplyDistance(prefab_instance);
-#endif
     }
 
     bool SomethingIsChanged()
