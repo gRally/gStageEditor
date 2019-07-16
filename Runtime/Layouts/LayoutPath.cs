@@ -389,7 +389,7 @@ public class LayoutPath : MonoBehaviour
         return points.Count > 0;
     }
 
-#if VEGETATION_STUDIO
+#if VEGETATION_STUDIO || VEGETATION_STUDIO_PRO
     [HideInInspector]
     public bool VS_RemoveGrass = true;
     [HideInInspector]
@@ -438,7 +438,10 @@ public class LayoutPath : MonoBehaviour
         }
 
         var go = new GameObject(name);
-        SceneManager.MoveGameObjectToScene(go, scene);
+        if (scene != null)
+        {
+            SceneManager.MoveGameObjectToScene(go, scene);
+        }
 
         var vml = go.AddComponent<AwesomeTechnologies.VegetationMaskLine>();
         vml.MaskName = string.Format("gRally {0} mask", transform.gameObject.scene.name);

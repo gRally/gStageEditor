@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 4885762084400391766}
   - component: {fileID: 4885762084401357974}
   - component: {fileID: 1752511726404362719}
-  - component: {fileID: 1752511726404362718}
+  - component: {fileID: 333160412815199931}
   m_Layer: 0
-  m_Name: HayBaleLeft
+  m_Name: HayBaleLeft_00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4885762084403558998}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -62.152477, y: 50.645, z: 339.91733}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -88,13 +88,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4885762084403558998}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe01070d3946c324b80b3614babaafd8, type: 3}
+  m_Script: {fileID: 11500000, guid: e3b0d8aecb7afa94980fd2a3ca2233c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_collisionFlags: 0
   m_groupsIBelongTo: 1
   m_collisionMask: -1
-  isDynamic: 0
   _friction: 0.5
   _rollingFriction: 0
   _linearDamping: 0
@@ -110,9 +109,10 @@ MonoBehaviour:
   _linearFactor: {x: 1, y: 1, z: 1}
   _angularFactor: {x: 1, y: 1, z: 1}
   _mass: 400
-  velocity: {x: 0, y: 0, z: 0}
-  angularVelocity: {x: 0, y: 0, z: 0}
---- !u!114 &1752511726404362718
+  _linearVelocity: {x: 0, y: 0, z: 0}
+  _angularVelocity: {x: 0, y: 0, z: 0}
+  debugType: 0
+--- !u!114 &333160412815199931
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,9 +121,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4885762084403558998}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: deb320be6f1cf7f48b710d814600417e, type: 3}
+  m_Script: {fileID: 11500000, guid: 95b58b3db50302c4cae1f68e13fea673, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   drawGizmo: 1
   halfExtent: {x: 0.5, y: 0.5, z: 0.5}
-  m_localScaling: {x: 1.6, y: 1.6, z: 1.2}
+  m_localScaling: {x: 1.55, y: 1.55, z: 1.15}

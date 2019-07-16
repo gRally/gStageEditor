@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6061359910352015978}
   - component: {fileID: 6061359910353310282}
   - component: {fileID: 6061359910354309258}
-  m_Layer: 0
-  m_Name: jersey2m
+  m_Layer: 21
+  m_Name: Jersey_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6061359910352113226}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -60.136, y: 50.236057, z: 349.78}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

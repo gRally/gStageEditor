@@ -267,7 +267,7 @@ public class LayoutPathEditor : Editor
             }
         }
 
-#if VEGETATION_STUDIO
+#if VEGETATION_STUDIO || VEGETATION_STUDIO_PRO
         GUILayout.Space(10);
         GUI.backgroundColor = Color.white;
         GUILayout.Label("Vegetation Studio road mask creation", EditorStyles.boldLabel);

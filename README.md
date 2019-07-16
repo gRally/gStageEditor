@@ -1,3 +1,8 @@
+### TBA
+- Preparation to manage gStageEditor as package directly in Unity;
+- Updates to manage the layout objects in procedural stages;
+- Files & folders structure optimized;
+
 ### V1.10.0 - 2018/06/11
 - Integration with [Vegetation Studio](https://www.awesometech.no) to create the mask line from the layout path;
 
