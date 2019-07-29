@@ -181,7 +181,7 @@ public class ExportStages
                         for (int pt = 0; pt < path.GetPointsCount(); pt += eachPoint)
                         {
                             var point = path.GetPoint(pt);
-                            pointExport += string.Format("{0} {1} {2} ", point.x, point.y, point.z);
+                            pointExport += string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} ", point.x, point.y, point.z);
                         }
                         pointExport = pointExport.Trim();
                         xml.Settings[string.Format("Layouts/Layout{0}", i)].WriteString("points", pointExport);
@@ -326,11 +326,11 @@ public class ExportStages
         {
             for (int x = 0; x < wetSize; x++)
             {
-                retWet += colors[x, y].ToString() + " ";
+                retWet += colors[x, y].ToString(CultureInfo.InvariantCulture) + " ";
             }
         }
-
-        xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteString("wet", retWet.Trim());
+        // retWet = retWet.Trim().Replace(",", ".");
+        xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteString("wet", retWet);
     }
 
     static void getPuddlesData(int idMat, Texture2D tex, int wetSize, string materialName, float puddleSize, ref gUtility.CXml xml)
@@ -438,12 +438,12 @@ public class ExportStages
         {
             for (int x = 0; x < wetSize; x++)
             {
-                retWet += colors[x, y].ToString() + " ";
+                retWet += colors[x, y].ToString(CultureInfo.InvariantCulture) + " ";
             }
         }
-
+        // retWet = retWet.Trim().Replace(",", ".");
         xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteFloat("puddlesSize", puddleSize);
-        xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteString("puddles", retWet.Trim());
+        xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteString("puddles", retWet);
     }
 
     static Texture2D scaleTexture(Texture2D source, int targetWidth, int targetHeight)

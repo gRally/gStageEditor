@@ -170,6 +170,8 @@ public class StartFinish : StageResources
         CreateMeshFromPrefab(transform, resourceName, "StageSigns/BannerStart_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PLACE_AS_IS);
 
         // photocells
+        layout.GetPositionOnPath(StartDistance + 0.5f);
+        pos = layout.PosOnPath;
         CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/PhotoCell_Left_00", pos + (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
         CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/PhotoCell_Right_00", pos - (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
 
@@ -244,6 +246,8 @@ public class StartFinish : StageResources
         CreateMeshFromPrefab(transform, resourceName, "StageSigns/BannerFinish_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PLACE_AS_IS);
 
         // photocells
+        layout.GetPositionOnPath(FinishDistance + 0.5f);
+        pos = layout.PosOnPath;
         CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/PhotoCell_Left_00", pos + (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
         CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/PhotoCell_Right_00", pos - (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
 
@@ -333,15 +337,23 @@ public class StartFinish : StageResources
     /// </summary>
     public void CleanSigns()
     {
-        for (int i = 0; i < transform.childCount; i++)
+        int childs = transform.childCount;
+        for (int i = childs - 1; i >= 0; i--)
         {
             var element = transform.GetChild(i);
-            if (element.name.ToLower().StartsWith("signstart") ||
-                element.name.ToLower().StartsWith("signsplit") ||
-                element.name.ToLower().StartsWith("signend") ||
-                element.name.ToLower().StartsWith("signfree") ||
-                element.name.ToLower().StartsWith("bannerstart") ||
-                element.name.ToLower().StartsWith("bannerfinish"))
+            var name = element.name.ToLower();
+            if (name.Contains("signstart") ||
+                name.Contains("signsplit") ||
+                name.Contains("signend") ||
+                name.Contains("signfree") ||
+                name.Contains("bannerstart") ||
+                name.Contains("bannerfinish") ||
+                name.Contains("marshall_table") ||
+                name.Contains("photocell") ||
+                name.Contains("gazebo") ||
+                name.Contains("endstage") ||
+                name.Contains("jerseyend") ||
+                name.Contains("stoproadcone"))
             {
                 DestroyImmediate(element.gameObject);
             }

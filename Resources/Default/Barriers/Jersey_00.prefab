@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8338966804767289644}
   - component: {fileID: 8338966804765995276}
   - component: {fileID: 8338966804764865484}
+  - component: {fileID: 64259539089539158}
   m_Layer: 21
   m_Name: Jersey_00
   m_TagString: Untagged
@@ -77,3 +78,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &64259539089539158
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8338966804767059212}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300000, guid: 6487a26f5ee5ab640b27efbc8abc8c08, type: 3}
