@@ -14,6 +14,7 @@ public class LayoutInfo : MonoBehaviour
     //public string Nation;
     public string Tags;
     public bool SaveTimes = true;
+    public bool multiLaps = true;
     public int countryIndex = 0;
 
     public bool Tarmac = true;

@@ -5,11 +5,11 @@ using System.Collections.Generic;
 public class StartFinish : StageResources
 {
     [Header("Start")]
-	public float StartDistance = 100.0f;
+    public float StartDistance = 100.0f;
     public float StartCarRelative = -100.0f;
-	public float StartCo0Relative = -25.0f;
-	public float StartCo1Relative = -50.0f;
-	public float StartEndRelative = 25.0f;
+    public float StartCo0Relative = -25.0f;
+    public float StartCo1Relative = -50.0f;
+    public float StartEndRelative = 25.0f;
 
     [Header("Splits")]
     public float Split1Distance = 200.0f;
@@ -18,37 +18,38 @@ public class StartFinish : StageResources
 
     [Header("Finish")]
     public float FinishDistance = 1000.0f;
-	public float FinishCo0Relative = -100.0f;
-	public float FinishStopRelative = 200.0f;
-	public float FinishEndRelative = 25.0f;
+    public float FinishCo0Relative = -100.0f;
+    public float FinishStopRelative = 200.0f;
+    public float FinishEndRelative = 25.0f;
 
     float oldStartCarRelative = 0.0f;
     float oldStartDistance = 0.0f;
-	float oldStartCo0Relative = 0.0f;
-	float oldStartCo1Relative = 0.0f;
-	float oldStartEndRelative = 0.0f;
+    float oldStartCo0Relative = 0.0f;
+    float oldStartCo1Relative = 0.0f;
+    float oldStartEndRelative = 0.0f;
 
     float oldSplit1Distance = 0.0f;
     float oldSplit2Distance = 0.0f;
     float oldSplit3Distance = 0.0f;
 
     float oldFinishDistance = 0.0f;
-	float oldFinishCo0Relative = 0.0f;
-	float oldFinishStopRelative = 0.0f;
-	float oldFinishEndRelative = 0.0f; 
+    float oldFinishCo0Relative = 0.0f;
+    float oldFinishStopRelative = 0.0f;
+    float oldFinishEndRelative = 0.0f;
 
     [ShowOnly, Header("Data Calculated")]
     public float RealLength;
 
-	public LayoutPath layout = null;
+    public LayoutPath layout = null;
     [Header("Signals")]
+    public bool useCustomSigns;
     public string resourceName = "Default";
     public float SignalDistanceFromCenter = 2.5f;
     public float SignalDistanceFromBanner = 0.8f;
-    
+
     //[ShowOnly, Tooltip("Points 3d"), Header("Spline Points")]
     [HideInInspector]
-	public List<Vector3> Points = new List<Vector3>();
+    public List<Vector3> Points = new List<Vector3>();
 
     public bool UpdatePoints()
     {
@@ -110,6 +111,7 @@ public class StartFinish : StageResources
 
     public void PlaceSignals(bool addCollider = true)
     {
+        float farCrossRoad = -10f;
         if (layout == null)
         {
             return;
@@ -120,6 +122,27 @@ public class StartFinish : StageResources
             AddCollider();
         }
 
+        /*
+        // Co0
+        layout.GetPositionOnPath(StartDistance + StartCo1Relative + StartCo0Relative);
+        var pos = layout.PosOnPath;
+        var p0 = layout.GetPointPrec();
+        var p1 = layout.GetPointNext();
+
+        var dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        if (settings.useCustomSigns)
+        {
+            CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignStart0_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+            CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignStart0_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        }
+        else
+        {
+            // helper
+            CreateFakeMesh(transform, "SignStart0_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), new Vector3(0.3f, 0.6f, 0.3f), Vector3.zero, HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+            CreateFakeMesh(transform, "SignStart0_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), new Vector3(0.3f, 0.6f, 0.3f), Vector3.zero, HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        }
+        */
+
         // Start -----------------------------------------------------------------------------------
         // gazebo
         layout.GetPositionOnPath(StartDistance + StartCarRelative);
@@ -127,172 +150,239 @@ public class StartFinish : StageResources
         Vector3 p0 = layout.GetPointPrec();
         Vector3 p1 = layout.GetPointNext();
         Vector3 dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/Gazebo_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
+        CreateMeshFromPrefab(true, transform, resourceName, "StartStop_Area/Gazebo_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "Gazebo_00");
 
         // Marshall table
-        CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/Marshall_Table_00", pos - (dot * 4f), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 180, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StartStop_Area/Group_Marshal_Table_00", pos - (dot * 4f), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(0, 180, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "Marshall_Table_00");
 
         // Co0
         layout.GetPositionOnPath(StartDistance + StartCo1Relative + StartCo0Relative);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            StartCo0Relative += farCrossRoad;
+            layout.GetPositionOnPath(StartDistance + StartCo1Relative + StartCo0Relative);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignStart0_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignStart0_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignStart0_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignStart0_00", "Crossroad");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignStart0_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignStart0_00", "Crossroad");
 
         // Co1
         layout.GetPositionOnPath(StartDistance + StartCo1Relative);
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            StartCo1Relative += farCrossRoad;
+            layout.GetPositionOnPath(StartDistance + StartCo1Relative);
+            pos = layout.PosOnPath;
+        }
         pos = layout.PosOnPath;
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignStart1_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignStart1_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignStart1_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignStart1_00", "Crossroad");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignStart1_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignStart1_00", "Crossroad");
 
         // start
         layout.GetPositionOnPath(StartDistance - SignalDistanceFromBanner);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            SignalDistanceFromBanner += farCrossRoad;
+            layout.GetPositionOnPath(StartDistance - SignalDistanceFromBanner);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignStart2_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignStart2_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignStart2_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignStart2_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignStart2_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignStart2_00");
+
         // banner start
         layout.GetPositionOnPath(StartDistance);
         pos = layout.PosOnPath;
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/BannerStart_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PLACE_AS_IS);
+        CreateMeshFromPrefab(true, transform, resourceName, "StageSigns/BannerStart_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PLACE_AS_IS, "BannerStart_00");
 
         // photocells
         layout.GetPositionOnPath(StartDistance + 0.5f);
         pos = layout.PosOnPath;
-        CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/PhotoCell_Left_00", pos + (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/PhotoCell_Right_00", pos - (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
+        dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        CreateMeshFromPrefab(false, transform, resourceName, "StartStop_Area/PhotoCell_Left_00", pos + (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "PhotoCell_Left_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StartStop_Area/PhotoCell_Right_00", pos - (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "PhotoCell_Right_00");
 
         // end
         layout.GetPositionOnPath(StartDistance + StartEndRelative);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            StartEndRelative += farCrossRoad;
+            layout.GetPositionOnPath(StartDistance + StartEndRelative);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignFree_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignFree_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignFree_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignFree_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignFree_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignFree_00");
 
 
         // split 1
         layout.GetPositionOnPath(Split1Distance);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            Split1Distance += farCrossRoad;
+            layout.GetPositionOnPath(Split1Distance);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignSplit1_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignSplit1_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignSplit1_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignSplit1_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignSplit1_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignSplit1_00");
 
         // split 2
         layout.GetPositionOnPath(Split2Distance);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            Split2Distance += farCrossRoad;
+            layout.GetPositionOnPath(Split2Distance);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignSplit2_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignSplit2_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignSplit2_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignSplit2_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignSplit2_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignSplit2_00");
 
         // split 3
         layout.GetPositionOnPath(Split3Distance);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            Split3Distance += farCrossRoad;
+            layout.GetPositionOnPath(Split3Distance);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignSplit3_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignSplit3_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignSplit3_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignSplit3_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignSplit3_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignSplit3_00");
 
 
         // finish ----------------------------------------------------------------------------------
         // Co0
         layout.GetPositionOnPath(FinishDistance + FinishCo0Relative);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            FinishCo0Relative += farCrossRoad;
+            layout.GetPositionOnPath(FinishDistance + FinishCo0Relative);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignEnd0_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignEnd0_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignEnd0_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignEnd0_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignEnd0_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignEnd0_00");
 
         // finish
         layout.GetPositionOnPath(FinishDistance - SignalDistanceFromBanner);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            SignalDistanceFromBanner += farCrossRoad;
+            layout.GetPositionOnPath(FinishDistance - SignalDistanceFromBanner);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignEnd1_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignEnd1_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignEnd1_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignEnd1_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignEnd1_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignEnd1_00");
+
         // banner finish
         layout.GetPositionOnPath(FinishDistance);
         pos = layout.PosOnPath;
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/BannerFinish_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PLACE_AS_IS);
+        CreateMeshFromPrefab(true, transform, resourceName, "StageSigns/BannerFinish_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PLACE_AS_IS, "BannerFinish_00");
 
         // photocells
         layout.GetPositionOnPath(FinishDistance + 0.5f);
         pos = layout.PosOnPath;
-        CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/PhotoCell_Left_00", pos + (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/PhotoCell_Right_00", pos - (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        p0 = layout.GetPointPrec();
+        p1 = layout.GetPointNext();
+        dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
+        CreateMeshFromPrefab(false, transform, resourceName, "StartStop_Area/PhotoCell_Left_00", pos + (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "PhotoCell_Left_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StartStop_Area/PhotoCell_Right_00", pos - (dot * (SignalDistanceFromCenter - 0.1f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "PhotoCell_Right_00");
 
         // -3
         layout.GetPositionOnPath(FinishDistance + FinishStopRelative - 150f);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            layout.GetPositionOnPath(FinishDistance + FinishStopRelative - 150f + farCrossRoad);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/EndStageSign3_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/EndStageSign3_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/EndStageSign3_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "EndStageSign3_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/EndStageSign3_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "EndStageSign3_00");
 
         // -2
         layout.GetPositionOnPath(FinishDistance + FinishStopRelative - 100f);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            layout.GetPositionOnPath(FinishDistance + FinishStopRelative - 100f + farCrossRoad);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/EndStageSign2_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/EndStageSign2_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/EndStageSign2_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "EndStageSign2_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/EndStageSign2_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "EndStageSign2_00");
 
         // -1
         layout.GetPositionOnPath(FinishDistance + FinishStopRelative - 50f);
         pos = layout.PosOnPath;
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            layout.GetPositionOnPath(FinishDistance + FinishStopRelative - 50f + farCrossRoad);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/EndStageSign1_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/EndStageSign1_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/StopRoadCone_00", pos + (dot * (SignalDistanceFromCenter - 0.3f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/StopRoadCone_00", pos - (dot * (SignalDistanceFromCenter - 0.3f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/EndStageSign1_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "EndStageSign1_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/EndStageSign1_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "EndStageSign1_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/StopRoadCone_00", pos + (dot * (SignalDistanceFromCenter - 0.3f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "StopRoadCone_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/StopRoadCone_00", pos - (dot * (SignalDistanceFromCenter - 0.3f)), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "StopRoadCone_00");
 
         // stop
         layout.GetPositionOnPath(FinishDistance + FinishStopRelative);
         pos = layout.PosOnPath;
-
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            FinishStopRelative += farCrossRoad;
+            layout.GetPositionOnPath(FinishDistance + FinishStopRelative);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignEnd2_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignEnd2_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignEnd2_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignEnd2_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignEnd2_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignEnd2_00");
 
         // gazebo
         layout.GetPositionOnPath(FinishDistance + FinishStopRelative - 2f);
@@ -301,21 +391,25 @@ public class StartFinish : StageResources
         p1 = layout.GetPointNext();
 
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/Gazebo_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
+        CreateMeshFromPrefab(true, transform, resourceName, "StartStop_Area/Gazebo_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "Gazebo_00");
 
         // Marshall table
-        CreateMeshFromPrefab(transform, resourceName, "StartStop_Area/Marshall_Table_00", pos - (dot * 4f), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 180, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StartStop_Area/Group_Marshal_Table_00", pos - (dot * 4f), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(0, 180, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "Marshall_Table_00");
 
         // end
         layout.GetPositionOnPath(FinishDistance + FinishStopRelative + FinishEndRelative);
         pos = layout.PosOnPath;
-
+        if (!MeshIsPlaceable(pos, "Crossroad"))
+        {
+            FinishEndRelative += farCrossRoad;
+            layout.GetPositionOnPath(FinishDistance + FinishStopRelative + FinishEndRelative);
+            pos = layout.PosOnPath;
+        }
         p0 = layout.GetPointPrec();
         p1 = layout.GetPointNext();
-
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignFree_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "StageSigns/SignFree_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND);
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignFree_00", pos + (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignFree_00");
+        CreateMeshFromPrefab(false, transform, resourceName, "StageSigns/SignFree_00", pos - (dot * SignalDistanceFromCenter), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 90, 0), HEIGHT_DETECTION.LOWER_POINT_AT_GROUND, "SignFree_00");
 
         // far far end
         layout.GetPositionOnPath(FinishDistance + FinishStopRelative + FinishEndRelative + 6f);
@@ -325,11 +419,9 @@ public class StartFinish : StageResources
         p1 = layout.GetPointNext();
 
         dot = Vector3.Cross(p1 - p0, Vector3.up).normalized;
-        CreateMeshFromPrefab(transform, resourceName, "Barriers/JerseyEnd_00", pos + (dot * 2.2f), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 0, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "Barriers/JerseyEnd_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 0, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
-        CreateMeshFromPrefab(transform, resourceName, "Barriers/JerseyEnd_00", pos - (dot * 2.2f), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 0, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND);
-
-        //RemoveCollider();
+        CreateMeshFromPrefab(true, transform, resourceName, "Barriers/JerseyEnd_00", pos + (dot * 2.2f), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 0, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "JerseyEnd_00");
+        CreateMeshFromPrefab(true, transform, resourceName, "Barriers/JerseyEnd_00", pos, Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 0, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "JerseyEnd_00");
+        CreateMeshFromPrefab(true, transform, resourceName, "Barriers/JerseyEnd_00", pos - (dot * 2.2f), Quaternion.LookRotation(p1 - p0) * Quaternion.Euler(270, 0, 0), HEIGHT_DETECTION.PIVOT_AT_GROUND, "JerseyEnd_00");
     }
 
     /// <summary>
@@ -443,7 +535,7 @@ public class StartFinish : StageResources
         var collisions = Resources.FindObjectsOfTypeAll(typeof(GameObject));
         foreach (var o in collisions)
         {
-            var col = (GameObject) o;
+            var col = (GameObject)o;
             if (col.layer == layerIndex && col.GetComponent<MeshCollider>() == null)
             {
                 col.AddComponent<MeshCollider>();
@@ -457,7 +549,7 @@ public class StartFinish : StageResources
         var collisions = Resources.FindObjectsOfTypeAll(typeof(GameObject));
         foreach (var o in collisions)
         {
-            var col = (GameObject) o;
+            var col = (GameObject)o;
             if (col.layer == layerIndex)
             {
                 DestroyImmediate(col.GetComponent<MeshCollider>());

@@ -61,6 +61,7 @@ public class LayoutInfoEditor : Editor
         GUILayout.BeginHorizontal();
         //GUILayout.Label("Save Times:", EditorStyles.boldLabel);
         _script.SaveTimes = EditorGUILayout.Toggle("Save Times:",_script.SaveTimes);
+        _script.multiLaps = EditorGUILayout.Toggle("Multiple laps:", _script.multiLaps);
         GUILayout.EndHorizontal();
 
 	 

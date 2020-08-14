@@ -464,7 +464,7 @@ public class LayoutPath : MonoBehaviour
         vml.ClearNodes();
 
         var toSkip = 0;
-        for (int i = 0; i < points.Count; i ++)
+        for (int i = 0; i < points.Count; i++)
         {
             if (toSkip >= VS_SkipPoints)
             {
@@ -476,7 +476,6 @@ public class LayoutPath : MonoBehaviour
         vml.UpdateVegetationMask();
         return true;
     }
-
 #endif
 
 }
