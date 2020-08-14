@@ -1,3 +1,13 @@
+# gStageEditor
+
+This is the official repository to build [gRally](https://grally.net) stages.
+
+:memo: Please take a look to the [wiki](https://github.com/gRally/dev/wiki/Stages).
+
+
+
+## Changelog
+
 ### TBA
 - Preparation to manage gStageEditor as package directly in Unity;
 - Updates to manage the layout objects in procedural stages;
