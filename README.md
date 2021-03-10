@@ -1,17 +1,10 @@
-# gStageEditor
-
-This is the official repository to build [gRally](https://grally.net) stages.
-
-:memo: Please take a look to the [wiki](https://github.com/gRally/dev/wiki/Stages).
-
-
-
-## Changelog
-
 ### TBA
 - Preparation to manage gStageEditor as package directly in Unity;
 - Updates to manage the layout objects in procedural stages;
 - Files & folders structure optimized;
+
+### V2.0.0 - 2021/03/5
+- Improvements to make gStageEditor working with the latest gRally release;
 
 ### V1.10.0 - 2018/06/11
 - Integration with [Vegetation Studio](https://www.awesometech.no) to create the mask line from the layout path;

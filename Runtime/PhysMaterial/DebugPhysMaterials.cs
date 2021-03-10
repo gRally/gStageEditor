@@ -20,9 +20,19 @@ public class DebugPhysMaterials : MonoBehaviour
     public float Displacement;
     private float _displacement;
 
+    [Space, Range(0f, 1f)]
+    public float Usage;
+    private float _usage;
 
     void Update ()
     {
+        if (_usage != Usage)
+        {
+            Groove = Usage;
+            Displacement = Usage;
+            _usage = Usage;
+        }
+
         if (_wet != Wet)
         {
             Shader.SetGlobalFloat("_GR_WetSurf", Wet);

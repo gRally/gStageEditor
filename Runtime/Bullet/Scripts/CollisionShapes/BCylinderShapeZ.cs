@@ -27,6 +27,7 @@ namespace BulletUnity
             }
         }
 
+        /*
         [SerializeField]
         protected Vector3 m_localScaling = Vector3.one;
         public Vector3 LocalScaling
@@ -41,6 +42,7 @@ namespace BulletUnity
                 }
             }
         }
+        */
 
         public override void OnDrawGizmosSelected()
         {

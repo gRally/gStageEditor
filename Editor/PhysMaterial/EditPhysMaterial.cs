@@ -2,6 +2,7 @@
 using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.SceneManagement;
 
 // https://unity3d.com/learn/tutorials/modules/beginner/live-training-archive/scriptable-objects
@@ -9,6 +10,7 @@ using UnityEngine.SceneManagement;
 public class EditPhysMaterial : EditorWindow
 {
     public PhysMaterialItemList matList;
+    public PhysMaterialItemList matListFiltered;
     private List<Surface> surfList;
     private string[] surfNames;
     private int surfID;
@@ -30,48 +32,22 @@ public class EditPhysMaterial : EditorWindow
         }
 
         var arrend = (Renderer[])Resources.FindObjectsOfTypeAll(typeof(Renderer));
+
         foreach (Renderer rend in arrend)
         {
             foreach (Material mat in rend.sharedMaterials)
             {
-                try
-                {
-                    if (mat.shader.name.Contains("gRally/Phys"))
-                    {
-                        // found it!
-                        bool found = false;
-                        for (int i = 0; i < matList.physMaterialList.Count; i++)
-                        {
-                            if (matList.physMaterialList[i].itemName == mat.name)
-                            {
-                                found = true;
-                            }
-                        }
-                        if (!found)
-                        {
-                            PhysMaterialItem item = new PhysMaterialItem();
-                            item.itemName = mat.name;
-                            if (mat.shader.name.EndsWith("1"))
-                            {
-                                item.Version = 1;
-                                item.physMaterial = mat.GetTexture("_PhysMap") as Texture2D;
-                                item.renderMaterial = mat.GetTexture("_MainTex") as Texture2D;
-                            }
-                            else if (mat.shader.name.EndsWith("2"))
-                            {
-                                item.Version = 2;
-                                item.physMaterial = mat.GetTexture("_PhysicalTexture") as Texture2D;
-                                item.renderMaterial = mat.GetTexture("_AlbedowithSmoothnessMap") as Texture2D;
-                            }
+                AddMaterial(mat, true);
+            }
+        }
 
-                            matList.physMaterialList.Add(item);
-                        }
-                    }
-                }
-                catch
-                {
-
-                }
+        var resources = Resources.LoadAll("", typeof(Material));
+        foreach (var res in resources)
+        {
+            var mat = res as Material;
+            if (mat != null)
+            {
+                AddMaterial(mat, false);
             }
         }
 
@@ -85,6 +61,8 @@ public class EditPhysMaterial : EditorWindow
         }
         surfID = 0;
 
+        matList.Sort();
+
         if (matList.physMaterialList[viewIndex - 1].physMaterial == null)
         {
             CreateEmpty();
@@ -95,17 +73,66 @@ public class EditPhysMaterial : EditorWindow
         }
     }
 
+    void AddMaterial(Material mat, bool loadFromScene)
+    {
+        try
+        {
+            if (mat.shader.name.Contains("gRally/Phys"))
+            {
+                // found it!
+                bool found = false;
+                for (int i = 0; i < matList.physMaterialList.Count; i++)
+                {
+                    if (matList.physMaterialList[i].material.GetInstanceID() == mat.GetInstanceID())
+                    {
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    PhysMaterialItem item = new PhysMaterialItem();
+                    item.material = mat;
+                    if (mat.shader.name.EndsWith("1"))
+                    {
+                        item.Version = 1;
+                        item.physMaterial = mat.GetTexture("_PhysMap") as Texture2D;
+                        item.renderMaterial = mat.GetTexture("_MainTex") as Texture2D;
+                    }
+                    else if (mat.shader.name.EndsWith("2"))
+                    {
+                        item.Version = 2;
+                        item.physMaterial = mat.GetTexture("_PhysicalTexture") as Texture2D;
+                        item.renderMaterial = mat.GetTexture("_AlbedowithSmoothnessMap") as Texture2D;
+                    }
+                    else if (mat.shader.name.EndsWith("3"))
+                    {
+                        item.Version = 3;
+                        item.physMaterial = mat.GetTexture("_PhysicalTexture") as Texture2D;
+                        item.renderMaterial = mat.GetTexture("_AlbedowithSmoothnessMap") as Texture2D;
+                    }
+
+                    item.GetTexturePath(loadFromScene);
+
+                    matList.physMaterialList.Add(item);
+                }
+            }
+        }
+        catch
+        {
+
+        }
+    }
+    public string filter;
     void OnGUI()
     {
-        GUILayout.BeginHorizontal();
+        //GUILayout.BeginVertical();
         GUILayout.Label("Physics Material Editor", EditorStyles.boldLabel);
 
         if (matList != null)
         {
+            //matList.FilterPath(filter);
             GUILayout.BeginHorizontal();
-
             GUILayout.Space(10);
-
             if (GUILayout.Button("Prev", GUILayout.ExpandWidth(false)))
             {
                 if (viewIndex > 1)
@@ -123,46 +150,61 @@ public class EditPhysMaterial : EditorWindow
                     changeTex();
                 }
             }
+            //GUILayout.Space(50);
+            //filter = GUILayout.TextField(filter);
             GUILayout.EndHorizontal();
+            GUILayout.Space(10);
 
-            GUILayout.Space(60);
-            if (matList.physMaterialList == null)
+            var offsetY = 110f;
+            if (matList.physMaterialList?.Count > 0)
             {
-                Debug.Log("wtf");
-                return;
-            }
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField($"{viewIndex} of {matList.physMaterialList.Count}", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField($"{matList.physMaterialList[viewIndex - 1].material.name}", EditorStyles.boldLabel);
+                GUILayout.EndHorizontal();
 
-            if (matList.physMaterialList.Count > 0)
-            {
-                GUILayout.BeginVertical();
-                EditorGUILayout.LabelField(string.Format("{0} of {1} Material {2}", viewIndex, matList.physMaterialList.Count, matList.physMaterialList[viewIndex - 1].itemName));
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField($"phys path:");
+                EditorGUILayout.LabelField($"path:");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(Path.GetDirectoryName(matList.physMaterialList[viewIndex - 1].pathPhysMaterial), EditorStyles.miniLabel);
+                EditorGUILayout.LabelField(matList.physMaterialList[viewIndex - 1].pathMaterial, EditorStyles.miniLabel);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(Path.GetFileName(matList.physMaterialList[viewIndex - 1].pathPhysMaterial), EditorStyles.miniLabel);
+                EditorGUILayout.LabelField("", EditorStyles.miniLabel);
+                GUILayout.EndHorizontal();
+
+
                 matList.physMaterialList[viewIndex - 1].Opacity = EditorGUILayout.Slider("Opacity", matList.physMaterialList[viewIndex - 1].Opacity, 0.0f, 1.0f);
-                GUILayout.EndVertical();
 
                 GUI.color = Color.white;
-                GUI.DrawTexture(new Rect(50.0f, 60.0f, 512, 512), matList.physMaterialList[viewIndex - 1].renderMaterial, ScaleMode.StretchToFill, false);
+                GUI.DrawTexture(new Rect(50.0f, offsetY + 60.0f, 512, 512), matList.physMaterialList[viewIndex - 1].renderMaterial, ScaleMode.StretchToFill, false);
                 GUI.color = new Color(1.0f, 1.0f, 1.0f, matList.physMaterialList[viewIndex - 1].Opacity);
-                GUI.DrawTexture(new Rect(50.0f, 60.0f, 512, 512), debugTex, ScaleMode.StretchToFill);
+                GUI.DrawTexture(new Rect(50.0f, offsetY + 60.0f, 512, 512), debugTex, ScaleMode.StretchToFill);
                 GUI.color = Color.white;
 
                 for (int i = 0; i < 16; i++)
                 {
-                    GUILayout.BeginArea(new Rect(10.0f, 68.0f + i * 32.0f, 80.0f, 32.0f));
-                    matList.physMaterialList[viewIndex - 1].EditY[i] = GUILayout.Toggle(matList.physMaterialList[viewIndex -1].EditY[i], i.ToString());
+                    GUILayout.BeginArea(new Rect(10.0f, offsetY + 68.0f + i * 32.0f, 80.0f, 32.0f));
+                    matList.physMaterialList[viewIndex - 1].EditY[i] = GUILayout.Toggle(matList.physMaterialList[viewIndex - 1].EditY[i], i.ToString());
                     GUILayout.EndArea();
                 }
 
                 for (int i = 0; i < 16; i++)
                 {
-                    GUILayout.BeginArea(new Rect(50.0f + i * 32.0f, 44.0f, 32.0f, 32.0f));
+                    GUILayout.BeginArea(new Rect(50.0f + i * 32.0f, offsetY + 44.0f, 32.0f, 32.0f));
                     matList.physMaterialList[viewIndex - 1].EditX[i] = GUILayout.Toggle(matList.physMaterialList[viewIndex - 1].EditX[i], i.ToString());
                     GUILayout.EndArea();
                 }
 
-                GUILayout.BeginArea(new Rect(620, 60.0f, 200.0f, 500.0f));
+                GUILayout.BeginArea(new Rect(580, offsetY + 60.0f, 200.0f, 500.0f));
                 surfID = EditorGUILayout.Popup(surfID, surfNames);
                 GUI.color = Color.green;
-                if(GUILayout.Button("Paint"))
+                if (GUILayout.Button("Paint"))
                 {
                     PaintSelected();
                     EditorUtility.SetDirty(matList);
@@ -208,41 +250,30 @@ public class EditPhysMaterial : EditorWindow
                 GUI.color = Color.yellow;
                 if (GUILayout.Button("Save"))
                 {
-                    var texName = string.Format("Assets/PhysTextures/ph_{0}.png", matList.physMaterialList[viewIndex - 1].itemName);
+                    /*
+                    var texName = $"Assets/PhysTextures/ph_{matList.physMaterialList[viewIndex - 1].itemName}.png";
                     if (!Directory.Exists("Assets/PhysTextures"))
                     {
                         Directory.CreateDirectory("Assets/PhysTextures");
                     }
-
+                    */
+                    var texName = matList.physMaterialList[viewIndex - 1].pathPhysMaterial;
                     if (File.Exists(texName))
                     {
                         File.Delete(texName);
                     }
                     byte[] bytes = debugTex.EncodeToPNG();
                     File.WriteAllBytes(texName, bytes);
+                    AssetDatabase.Refresh();
 
-                    var arrend = (Renderer[])Resources.FindObjectsOfTypeAll(typeof(Renderer));
-                    foreach (Renderer rend in arrend)
+                    var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(texName);
+                    if (matList.physMaterialList[viewIndex - 1].Version == 1)
                     {
-                        foreach (Material mat in rend.sharedMaterials)
-                        {
-                            if (mat != null)
-                            {
-                                if (mat.name == matList.physMaterialList[viewIndex - 1].itemName)
-                                {
-                                    var tex = AssetDatabase.LoadAssetAtPath<Texture>(texName);
-                                    if (matList.physMaterialList[viewIndex - 1].Version == 1)
-                                    {
-                                        mat.SetTexture("_PhysMap", tex);
-                                    }
-                                    else if (matList.physMaterialList[viewIndex - 1].Version == 2)
-                                    {
-                                        mat.SetTexture("_PhysicalTexture", tex);
-                                    }
-                                    AssetDatabase.Refresh();
-                                }
-                            }
-                        }
+                        matList.physMaterialList[viewIndex - 1].material.SetTexture("_PhysMap", tex);
+                    }
+                    else if (matList.physMaterialList[viewIndex - 1].Version == 2)
+                    {
+                        matList.physMaterialList[viewIndex - 1].material.SetTexture("_PhysicalTexture", tex);
                     }
                 }
                 GUILayout.EndArea();
@@ -285,11 +316,11 @@ public class EditPhysMaterial : EditorWindow
             return;
         }
         A.isReadable = true;
-        A.linearTexture = true;
+        A.sRGBTexture = true;
         A.mipmapEnabled = false;
         A.filterMode = FilterMode.Point;
         AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
-        
+
         debugTex = new Texture2D(512, 512, TextureFormat.RGB24, false);
         var pixls = matList.physMaterialList[viewIndex - 1].physMaterial.GetPixels();
         debugTex.SetPixels(pixls);

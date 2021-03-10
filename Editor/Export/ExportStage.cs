@@ -240,6 +240,21 @@ public class ExportStages
                                 PhysMatDisplacement.Add(mat.name, mat.GetFloat("_MaxDisplacementmeters"));
                             }
                         }
+                        else if (mat.shader.name.EndsWith("3"))
+                        {
+                            shaderVer = 3;
+                            tex = mat.GetTexture("_PhysicalTexture");
+                            texWet = mat.GetTexture("_RSpecGTransparencyBAOAWetMap");
+                            texPuddles = mat.GetTexture("_PuddlesTexture");
+                            puddlesSize = mat.GetFloat("_PuddlesSize");
+                            xml.Settings[string.Format("Materials/Material#{0}", idMat + 1)].WriteFloat("maxDisplacement", mat.GetFloat("_MaxDisplacementmeters"));
+
+                            if (!PhysMatNames.ContainsKey(mat.name))
+                            {
+                                PhysMatNames.Add(mat.name, idMat);
+                                PhysMatDisplacement.Add(mat.name, mat.GetFloat("_MaxDisplacementmeters"));
+                            }
+                        }
                         if (tex != null)
                         {
                             if (!matExported.Contains(mat.name))

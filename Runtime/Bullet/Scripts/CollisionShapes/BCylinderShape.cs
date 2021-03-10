@@ -25,7 +25,7 @@ namespace BulletUnity
                 }
             }
         }
-
+        /*
         [SerializeField]
         protected Vector3 m_localScaling = Vector3.one;
         public Vector3 LocalScaling
@@ -39,7 +39,7 @@ namespace BulletUnity
                     ((CylinderShape)collisionShapePtr).LocalScaling = value.ToBullet();
                 }
             }
-        }
+        }*/
 
         public override void OnDrawGizmosSelected()
         {

@@ -2,10 +2,18 @@
 using System.Collections;
 
 [ExecuteInEditMode]
-public class ReplayCamera : MonoBehaviour {
+public class ReplayCamera : MonoBehaviour
+{
+    public bool updateTest = false;
+    public bool showAll = false;
+    public bool IsFixed = false;
+    public bool isOnDust = false;
+    public float StartDistance = -1.0f;
+    public float CamDistance = 0f;
 
-	public bool IsFixed = false;
-	public float StartDistance = -1.0f;
+    [Header("Debug")]
+    public float nearClip = 0.1f;
+    public float farClip = 50f;
 
     [Space(10), SerializeField]
     public float FocalLength = 50.0f;
@@ -24,12 +32,27 @@ public class ReplayCamera : MonoBehaviour {
     public float DofFarLimit;
 
     void OnDrawGizmos()
-    { 
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawSphere(transform.position, 0.25f);
+    {
+        DrawSpherePos();
+        if (showAll) DrawFrustum();
+    }
+    void OnDrawGizmosSelected()
+    {
+        if (!showAll) DrawFrustum();
     }
 
+
+#if UNITY_EDITOR
     void Update()
+    {
+        if (updateTest)
+        {
+            UpdateFovAndDof();
+        }
+    }
+#endif
+
+    public void UpdateFovAndDof()
     {
         calcFov();
         calcDof();
@@ -72,14 +95,15 @@ public class ReplayCamera : MonoBehaviour {
         //  Simplified calculation would be: return ((57.3 / focallength) * imagesize );
     }
 
-    void OnDrawGizmosSelected()
+    void DrawSpherePos()
     {
-#if UNITY_EDITOR
-        if (UnityEditor.Selection.activeGameObject != transform.gameObject)
-        {
-            return;
-        }
-#endif        
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawSphere(transform.position, 0.25f);
+
+    }
+
+    void DrawFrustum()
+    {
         if (true)
         {
             float dofNearM = DofNearLimit * 0.3048f;// feet to meters
@@ -93,16 +117,16 @@ public class ReplayCamera : MonoBehaviour {
             Vector3 toNear = Vector3.forward * dofNearM;
             Vector3 toFar = Vector3.forward * dofFarM;
             Vector3 toFocus = Vector3.forward * dofFocusM;
-            Vector3 toNearClip = Vector3.forward * 0.1f; //TODO _nodalCamera.nearClipPlane;
-            Vector3 toFarClip = Vector3.forward * 1000.0f;//TODO  _nodalCamera.farClipPlane;
+            Vector3 toNearClip = Vector3.forward * nearClip;
+            Vector3 toFarClip = Vector3.forward * farClip;
 
             float ang = Mathf.Tan(Mathf.Deg2Rad * (FovX / 2f));
 
             float oppNear = ang * dofNearM;
             float oppFar = ang * dofFarM;
             float oppFocus = ang * dofFocusM;
-            float oppNearClip = ang * 0.1f;//TODO  _nodalCamera.nearClipPlane;
-            float oppFarClip = ang * 1000.0f;//TODO _nodalCamera.farClipPlane;
+            float oppNearClip = ang * nearClip;
+            float oppFarClip = ang * farClip;
 
 
             Vector3 toNearR = Vector3.right * oppNear;
@@ -111,13 +135,13 @@ public class ReplayCamera : MonoBehaviour {
             Vector3 toNearClipR = Vector3.right * oppNearClip;
             Vector3 toFarClipR = Vector3.right * oppFarClip;
 
-            ang = Mathf.Tan(Mathf.Deg2Rad* (Fov / 2f));
+            ang = Mathf.Tan(Mathf.Deg2Rad * (Fov / 2f));
 
-            oppNear =   ang* dofNearM;
-            oppFar =    ang* dofFarM;
-            oppFocus = ang* dofFocusM;
-            oppNearClip = ang* 0.1f;//TODO  _nodalCamera.nearClipPlane;
-            oppFarClip = ang* 1000.0f;//TODO  _nodalCamera.farClipPlane;
+            oppNear = ang * dofNearM;
+            oppFar = ang * dofFarM;
+            oppFocus = ang * dofFocusM;
+            oppNearClip = ang * nearClip;
+            oppFarClip = ang * farClip;
 
             Vector3 toNearT = Vector3.up * oppNear;
             Vector3 toFarT = Vector3.up * oppFar;
