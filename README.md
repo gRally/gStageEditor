@@ -3,6 +3,9 @@
 - Updates to manage the layout objects in procedural stages;
 - Files & folders structure optimized;
 
+### V2.0.1 - 2021/03/11
+- Fix default object creation on LayoutX;
+
 ### V2.0.0 - 2021/03/5
 - Improvements to make gStageEditor working with the latest gRally release;
 

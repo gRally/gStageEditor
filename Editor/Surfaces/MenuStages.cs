@@ -63,7 +63,9 @@ public class MenuStages
         {
             var main = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
             EditorSceneManager.SaveScene(main, "Assets/Scenes/temp.unity");
-            EditorSceneManager.SetActiveScene(main);
+            //EditorSceneManager.SetActiveScene(main);
+            SceneManager.SetActiveScene(main);
+            Debug.Log("Active Scene : " + SceneManager.GetActiveScene().name);
 
             var path = "Assets/gStageEditor/Resources/CarSimulator.prefab";
             var carSim = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -106,16 +108,19 @@ public class MenuStages
             var layout = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             EditorSceneManager.SaveScene(layout, "Assets/Scenes/layout0.unity");
 
-            EditorSceneManager.SetActiveScene(layout);
+            //EditorSceneManager.SetActiveScene(layout);
+            SceneManager.SetActiveScene(layout);
+            Debug.Log("Active Scene : " + SceneManager.GetActiveScene().name);
+            
             var go = new GameObject("layout0");
             go.AddComponent<LayoutInfo>();
             go.AddComponent<LayoutPath>();
             go.AddComponent<StartFinish>();
             go.AddComponent<ReplayCameras>();
-
+            
             var layoutAsset = AssetImporter.GetAtPath("Assets/Scenes/layout0.unity");
             layoutAsset.assetBundleName = "layout0.grpack";
-            layoutAsset.SaveAndReimport();
+            // Fix 2.0.1 layoutAsset.SaveAndReimport();
             EditorSceneManager.MarkAllScenesDirty();
         }
 
@@ -148,7 +153,10 @@ public class MenuStages
             var layout = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             EditorSceneManager.SaveScene(layout, newLayoutPath);
 
-            EditorSceneManager.SetActiveScene(layout);
+            //EditorSceneManager.SetActiveScene(layout);
+            SceneManager.SetActiveScene(layout);
+            Debug.Log("Active Scene : " + SceneManager.GetActiveScene().name);
+
             var go = new GameObject(newLayoutName);
             go.AddComponent<LayoutInfo>();
             go.AddComponent<LayoutPath>();
@@ -157,7 +165,7 @@ public class MenuStages
 
             var layoutAsset = AssetImporter.GetAtPath(newLayoutPath);
             layoutAsset.assetBundleName = newLayoutName + ".grpack";
-            layoutAsset.SaveAndReimport();
+            // Fix 2.0.1 layoutAsset.SaveAndReimport();
             EditorSceneManager.MarkSceneDirty(layout);
         }
         else
