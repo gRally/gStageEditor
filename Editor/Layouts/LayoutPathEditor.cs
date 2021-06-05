@@ -54,11 +54,11 @@ public class LayoutPathEditor : Editor
                 return;
             }
 
-            float handleSize = HandleUtility.GetHandleSize(newPoint);
+            var handleSize = HandleUtility.GetHandleSize(newPoint);
             var nodeIndex = FindNearestNodeToMouse(worldPoints);
             if (nodeIndex < worldPoints.Length - 1)
             {
-                if (Handles.Button(newPoint, Quaternion.identity, handleSize * 0.1f, handleSize, HandleFuncNearest))
+                if (Handles.Button(newPoint, Quaternion.identity, handleSize * 0.1f, handleSize, Handles.RectangleHandleCap))
                 {
                     Undo.RecordObject(layoutPath, "Insert Node");
                     layoutPath.points.Insert(nodeIndex + 1, newPoint);
@@ -68,7 +68,7 @@ public class LayoutPathEditor : Editor
             }
             else
             {
-                if (Handles.Button(newPoint, Quaternion.identity, handleSize * 0.1f, handleSize, HandleFunc))
+                if (Handles.Button(newPoint, Quaternion.identity, handleSize * 0.1f, handleSize, Handles.RectangleHandleCap))
                 {
                     Undo.RecordObject(layoutPath, "Insert Node");
                     layoutPath.points.Add(newPoint);
@@ -83,8 +83,8 @@ public class LayoutPathEditor : Editor
             //Deleting Points
             int indexToDelete = FindNearestNodeToMouse(worldPoints);
             Handles.color = Color.red;
-            float handleSize = HandleUtility.GetHandleSize(worldPoints[0]);
-            if (Handles.Button(worldPoints[indexToDelete], Quaternion.identity, handleSize * 0.09f, handleSize, DeleteHandleFunc))
+            var handleSize = HandleUtility.GetHandleSize(worldPoints[0]);
+            if (Handles.Button(worldPoints[indexToDelete], Quaternion.identity, handleSize * 0.09f, handleSize, Handles.RectangleHandleCap))
             {
                 Undo.RecordObject(layoutPath, "Remove Node");
                 layoutPath.points.RemoveAt(indexToDelete);
@@ -131,7 +131,7 @@ public class LayoutPathEditor : Editor
         {
             Vector3 pos = layoutPath.transform.TransformPoint(layoutPath.points[i]);
             float handleSize = HandleUtility.GetHandleSize(pos);
-            Vector3 newPos = Handles.FreeMoveHandle(pos, Quaternion.identity, handleSize * 0.09f, Vector3.one, HandleFunc);
+            Vector3 newPos = Handles.FreeMoveHandle(pos, Quaternion.identity, handleSize * 0.09f, Vector3.one, Handles.RectangleHandleCap);
             if (newPos != pos)
             {
                 newPos = FindPoint();

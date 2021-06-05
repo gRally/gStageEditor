@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System;
+using System.Linq;
 
 //[ExecuteInEditMode]
 public class ReplayCameras : MonoBehaviour
@@ -33,6 +34,9 @@ public class ReplayCameras : MonoBehaviour
     public float LastNextFocalLength = -1;
 
     SortedDictionary<float, GameObject> camList = new SortedDictionary<float, GameObject> ();
+
+    [Header("Cameraman:")]
+    public bool placeCameramen = false;
 	
 	// Use this for initialization
 	void Start ()
@@ -362,5 +366,117 @@ public class ReplayCameras : MonoBehaviour
 		go.transform.rotation = rotation;
 		go.transform.parent = cameras.transform;
 	}
+
+    public void InitCameras()
+    {
+        Sort(false);
+        var currentPath = "Default/People/CameraMan_01";
+        var go_instance = Resources.Load<GameObject>(currentPath);
+
+        foreach (var item in camList)
+        {
+            if (Raycast(item.Value.transform.position, out float rayCastHeight))
+            {
+                var cam = item.Value.GetComponent<ReplayCamera>();
+                var camPos = item.Value.transform.position;
+                camPos.y = rayCastHeight + 1.4f;
+                item.Value.transform.position = camPos;
+                
+                // clear child
+                var ts = item.Value.GetComponentsInChildren<Transform>();
+                foreach (var t in ts)
+                {
+                    if (t.name.StartsWith("gr_cameraman"))
+                    {
+                        DestroyImmediate(t.gameObject);
+                    }
+                }
+
+                /*
+                var go = CreateMeshFromPrefab(true, item.Value.transform, GPS.Get().resourceName,
+                    "People/CameraMan_01", item.Value.transform.position, item.Value.transform.rotation,
+                    HEIGHT_DETECTION.PIVOT_AT_GROUND, $"gr_cameraman.{item.Value.name}");
+                */
+                
+                if (placeCameramen && !cam.IsFixed)
+                {
+                    var inst = Instantiate(go_instance); //Resources.Load<GameObject>(currentPath));
+                    inst.transform.position = item.Value.transform.position;
+                    inst.transform.rotation = item.Value.transform.rotation;
+                    inst.transform.SetParent(item.Value.transform);
+                    inst.name = $"gr_cameraman.{item.Value.name}";
+                    inst.isStatic = true;
+                    LowerOnGround(inst);
+                }
+
+                item.Value.GetComponent<ReplayCamera>().UpdateFovAndDof();
+            }
+        }
+    }
+    
+    bool Raycast(Vector3 pos, out float height)
+    {
+        var hits = Physics.RaycastAll(pos + Vector3.up, Vector3.down, 5.0F);
+        hits = hits.OrderBy(y => y.distance).ToArray();
+        for (int h = 0; h < hits.Length; h++)
+        {
+            height = hits[h].point.y;
+            return true;
+        }
+        height = 0;
+        return false;
+    }
+    
+    void LowerOnGround(GameObject obj)
+    {
+        Vector3 point;
+
+        var matrix = obj.transform.localToWorldMatrix;
+
+        Mesh mesh;
+        /*
+        var lod = obj.GetComponent<LODGroup>();
+        
+        if (lod != null)
+        {
+            var lod0 = lod.GetLODs()[0];
+            mesh = lod0.renderers[0].gameObject.GetComponent<MeshFilter>().sharedMesh;
+        }
+        else
+        */
+        {
+            var mf = obj.GetComponent<MeshFilter>();
+            if (mf == null)
+            {
+                var mfs = obj.GetComponentsInChildren<MeshFilter>();
+                foreach (var item in mfs)
+                {
+                    if (!item.name.ToLower().EndsWith("col"))
+                    {
+                        mf = item;
+                        matrix = mf.transform.localToWorldMatrix;
+                    }
+                }
+            }
+            mesh = mf.sharedMesh;
+        }
+        point = matrix.MultiplyPoint(mesh.bounds.min);
+        /* single.. gives some issues
+        bool raHit = false;
+        RaycastHit hit;
+        raHit = Physics.Raycast(point, Vector3.down, out hit);
+        if (raHit)
+        {
+            obj.transform.position = obj.transform.position - new Vector3(0.0f, hit.distance, 0.0f);
+        }*/
+        foreach (var hit in Physics.RaycastAll(point, Vector3.down))
+        {
+            if (hit.collider.gameObject.layer == 21 || hit.collider.gameObject.layer == 31 || hit.collider.gameObject.layer == 23)
+            {
+                obj.transform.position = obj.transform.position - new Vector3(0.0f, hit.distance, 0.0f);
+                break;
+            }
+        }
+    }
 }
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 [ExecuteInEditMode]
@@ -97,7 +97,7 @@ public class ReplayCamera : MonoBehaviour
 
     void DrawSpherePos()
     {
-        Gizmos.color = Color.magenta;
+        Gizmos.color = Color.cyan; 
         Gizmos.DrawSphere(transform.position, 0.25f);
 
     }

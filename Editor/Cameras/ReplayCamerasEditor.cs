@@ -48,6 +48,13 @@ public class ReplayCamerasEditor : Editor
                 replayCameras.AddCamera(sceneView.camera.gameObject.transform.position, sceneView.camera.gameObject.transform.rotation);
 			}
 
+            GUI.backgroundColor = new Color32(120, 255, 255, 255);
+            if (GUILayout.Button("Init cameras"))
+            {
+                replayCameras.InitCameras();
+            }
+            GUILayout.Space(10);
+            
             GUI.backgroundColor = Color.white;
             if (GUILayout.Button("Sort cameras"))
             {
